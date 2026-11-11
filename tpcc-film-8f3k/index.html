@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>سفر دیجیتال در اتاق تعاون استان تهران | AIgent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root{
+  --gold1:#f7e9b9; --gold2:#d9b45f; --gold3:#a8812f; --ink:#eaf0f2; --mute:#93aab3;
+  --amber:#e8a54b; --petrol:#0b3340; --petrol2:#0f4656;
+  --font:'Vazirmatn','Vazir','IRANSans','Tahoma','Segoe UI',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#010609;overflow:hidden;font-family:var(--font);color:var(--ink)}
+#stage{position:absolute;left:50%;top:50%;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:#020a10}
+#bgfar,#world{position:absolute;top:0;left:0;height:1080px}
+#bgfar{z-index:0}
+#world{z-index:1;transition:transform var(--pan,2.4s) cubic-bezier(.65,0,.35,1)}
+#dust{position:absolute;inset:0;z-index:2;pointer-events:none}
+.gold{background:linear-gradient(100deg,#f7e9b9 0%,#d9b45f 38%,#fff3cb 54%,#b8913a 78%,#e9c97a 100%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 6s linear infinite}
+@keyframes shimmer{to{background-position:-220% 0}}
+.box{position:relative;border:1.5px solid transparent;border-radius:24px;background:linear-gradient(rgba(7,30,41,.9),rgba(5,22,31,.92)) padding-box,linear-gradient(135deg,#f7e9b9 0%,#a8812f 38%,#e9c97a 62%,#8a6a22 100%) border-box;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+
+/* ---------- rooms ---------- */
+.room{position:absolute;top:0;width:1920px;height:1080px;overflow:hidden}
+.wall{position:absolute;inset:0 0 180px 0;background:
+  radial-gradient(900px 500px at 30% 20%, rgba(18,86,104,.35), transparent 70%),
+  linear-gradient(180deg,#0a2b38 0%,#061b26 100%)}
+.wall:after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,rgba(217,180,95,.05) 0 2px,transparent 2px 160px)}
+.floor{position:absolute;left:0;right:0;bottom:0;height:180px;background:linear-gradient(180deg,#04141c,#020a10);border-top:3px solid rgba(217,180,95,.55)}
+.floor:before{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(90deg,rgba(217,180,95,.07) 0 2px,transparent 2px 120px)}
+.lamp{position:absolute;top:0;width:160px;height:26px;border-radius:0 0 80px 80px;background:linear-gradient(#f7e9b9,#d9b45f);box-shadow:0 0 90px 40px rgba(247,233,185,.18)}
+.doorway{position:absolute;left:0;top:150px;width:150px;height:750px;border-right:6px solid rgba(217,180,95,.5);background:linear-gradient(90deg,rgba(2,10,16,.9),rgba(2,10,16,0));}
+.tag{position:absolute;top:60px;right:96px;z-index:3;display:flex;align-items:center;gap:16px;font-size:28px;font-weight:700;color:var(--gold1)}
+.tag small{display:inline-block;padding:6px 18px;border-radius:999px;border:1.5px solid rgba(217,180,95,.6);font-size:20px;color:var(--gold2);font-weight:500}
+.art{position:absolute;left:80px;top:200px;width:840px;height:700px;transform:scale(.88);transform-origin:0 0}
+.art svg{width:100%;height:100%;overflow:visible}
+.mk{position:absolute;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(5,22,31,.92);border:2px solid var(--gold2);color:var(--gold1);font-style:normal;font-weight:800;font-size:24px;display:flex;align-items:center;justify-content:center;opacity:.55;transition:all .4s}
+.mk.on{opacity:1;background:linear-gradient(135deg,#f7e9b9,#d9b45f);color:#0a1c25;box-shadow:0 0 0 0 rgba(247,233,185,.7);animation:mkp 1.4s ease-out infinite;transform:scale(1.15)}
+.mk.bad.on{background:linear-gradient(135deg,#ffd9a0,#e8a54b)}
+@keyframes mkp{0%{box-shadow:0 0 0 0 rgba(247,233,185,.7)}100%{box-shadow:0 0 0 34px rgba(247,233,185,0)}}
+.room:not(.active) *{animation-play-state:paused!important}
+
+/* ---------- svg animation helpers ---------- */
+.svgb{transform-box:fill-box;transform-origin:center}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.07);opacity:1}}
+@keyframes draw{0%{stroke-dashoffset:100}55%,90%{stroke-dashoffset:0}100%{stroke-dashoffset:-100}}
+@keyframes flow{from{stroke-dashoffset:0}to{stroke-dashoffset:-100}}
+@keyframes twinkle{0%,100%{opacity:.15}50%{opacity:1}}
+@keyframes grow{0%{transform:scaleY(0)}60%,100%{transform:scaleY(1)}}
+@keyframes rise{0%{opacity:0;transform:translateY(26px)}22%,80%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-6px)}}
+@keyframes slideR{0%{transform:translateX(0)}100%{transform:translateX(-170px)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes scan{from{transform:translateY(0)}to{transform:translateY(250px)}}
+@keyframes cursor{0%{transform:translate(0,0)}30%{transform:translate(-220px,120px)}60%{transform:translate(-340px,-10px)}100%{transform:translate(0,0)}}
+@keyframes typeb{0%{transform:scaleX(0)}70%,100%{transform:scaleX(1)}}
+.fl{animation:float 5s ease-in-out infinite}
+.pu{animation:pulse 2.6s ease-in-out infinite}
+.dr{stroke-dasharray:100;animation:draw 4.2s ease-in-out infinite}
+.fw{stroke-dasharray:6 94;animation:flow 2.6s linear infinite}
+.tw{animation:twinkle 3s ease-in-out infinite}
+.ty{transform-box:fill-box;transform-origin:right;animation:typeb 3.6s ease-in-out infinite alternate}
+
+/* ---------- hero ---------- */
+#hero{position:absolute;z-index:6;left:1190px;top:560px;width:300px;height:470px;transition:left 3.4s cubic-bezier(.4,0,.2,1)}
+#hero svg{width:100%;height:100%;overflow:visible}
+.lg,.arm,.bodyg,.headg{transform-box:view-box}
+.legF{transform-origin:129px 300px}.legB{transform-origin:171px 300px}
+.armF{transform-origin:110px 198px}.armB{transform-origin:203px 198px}
+.eye{transform-box:fill-box;transform-origin:center;animation:blink 4.6s infinite}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}
+.mouth{transform-box:fill-box;transform-origin:center;opacity:0}
+#hero.walk .legF{animation:lgA .55s ease-in-out infinite alternate}
+#hero.walk .legB{animation:lgB .55s ease-in-out infinite alternate}
+#hero.walk .armF{animation:lgB .55s ease-in-out infinite alternate}
+#hero.walk .armB{animation:lgA .55s ease-in-out infinite alternate}
+#hero.walk .bodyg{animation:bobw .275s ease-in-out infinite alternate}
+@keyframes lgA{from{transform:rotate(-26deg)}to{transform:rotate(26deg)}}
+@keyframes lgB{from{transform:rotate(26deg)}to{transform:rotate(-26deg)}}
+@keyframes bobw{from{transform:translateY(0)}to{transform:translateY(-8px)}}
+#hero.idle .bodyg{animation:breath 3.2s ease-in-out infinite}
+@keyframes breath{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.armF,.armB{transition:transform .6s cubic-bezier(.3,.8,.3,1)}
+#hero.point .armF{transform:rotate(102deg)}
+#hero.wave .armF{animation:waveA .6s ease-in-out infinite alternate}
+@keyframes waveA{from{transform:rotate(-150deg)}to{transform:rotate(-192deg)}}
+#hero.talk .mouth,#hero.point .mouth,#hero.wave .mouth{opacity:1;animation:talk .28s ease-in-out infinite alternate}
+@keyframes talk{from{transform:scaleY(.25)}to{transform:scaleY(1.2)}}
+
+/* ---------- bubble ---------- */
+#bubble{position:absolute;z-index:7;left:850px;bottom:500px;width:600px;padding:24px 32px;font-size:31px;line-height:1.75;font-weight:500;color:#f2f6f7;opacity:0;transform:translateY(20px) scale(.97);transition:opacity .45s,transform .45s}
+#bubble.on{opacity:1;transform:none}
+#bubble:after{content:"";position:absolute;bottom:-18px;left:470px;width:30px;height:30px;transform:rotate(45deg);background:#061c27;border-right:1.5px solid #a8812f;border-bottom:1.5px solid #a8812f}
+#bubble .w{display:inline-block;opacity:0;transform:translateY(10px);animation:wIn .45s forwards}
+@keyframes wIn{to{opacity:1;transform:none}}
+#bubble b{color:var(--gold1)}
+
+/* ---------- panel ---------- */
+#panel{position:absolute;z-index:7;right:46px;top:120px;width:400px;height:840px;padding:26px 22px;display:flex;flex-direction:column;opacity:0;transform:translateX(40px);transition:opacity .6s,transform .6s}
+#panel.on{opacity:1;transform:none}
+#panel h3{font-size:30px;font-weight:800;line-height:1.4;margin-bottom:4px}
+#panel .st{font-size:19px;color:var(--gold2);margin-bottom:14px}
+#items{flex:1;overflow:hidden;position:relative;display:flex;flex-direction:column;gap:12px;-webkit-mask-image:linear-gradient(180deg,#000 88%,transparent);mask-image:linear-gradient(180deg,#000 88%,transparent)}
+.it{display:flex;gap:14px;align-items:flex-start;padding:12px 14px;border-radius:16px;font-size:21px;line-height:1.6;color:#d4dfe3;background:rgba(15,70,86,.35);border:1px solid rgba(217,180,95,.28);opacity:0;transform:translateX(30px);transition:all .6s}
+.it.show{opacity:1;transform:none}
+.it .ic{flex:0 0 36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:20px;margin-top:2px}
+.it.good .ic{background:linear-gradient(135deg,#f7e9b9,#a8812f);color:#0a1c25}
+.it.issue .ic{background:linear-gradient(135deg,#ffd9a0,#e8a54b);color:#2b1700}
+.it.idea .ic{border:2px solid var(--gold2);color:var(--gold1)}
+.it.info .ic{border:2px dashed var(--mute);color:var(--mute)}
+.it.step .ic{background:rgba(217,180,95,.15);border:2px solid var(--gold2);color:var(--gold1)}
+.it.price .ic{background:linear-gradient(135deg,#f7e9b9,#a8812f);color:#0a1c25;font-size:15px}
+.it.issue{border-color:rgba(232,165,75,.5)}
+.it small{display:block;font-size:17px;color:var(--gold2);font-weight:700;margin-bottom:2px}
+.it.issue small{color:var(--amber)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{padding:6px 14px;border-radius:999px;font-size:20px;color:var(--gold1);background:rgba(217,180,95,.1);border:1.5px solid rgba(217,180,95,.55)}
+.pr b{display:block;font-size:30px;font-weight:900;margin-top:2px}
+.pr em{font-style:normal;font-size:18px;color:var(--mute)}
+
+/* ---------- hud ---------- */
+#brandhud{position:absolute;z-index:9;left:50px;top:36px;display:flex;align-items:center;gap:14px;direction:ltr;font-weight:800;letter-spacing:.08em;color:var(--gold1);font-size:24px}
+#brandhud svg{width:40px;height:40px}
+#caption{position:absolute;z-index:9;left:50px;bottom:14px;font-size:15px;color:var(--mute);direction:rtl;max-width:560px;line-height:1.5}
+#ctrl{position:absolute;z-index:10;left:50%;bottom:26px;transform:translateX(-50%);display:flex;align-items:center;gap:16px;direction:ltr;padding:10px 20px;background:rgba(5,22,31,.78);border:1.5px solid rgba(217,180,95,.45);border-radius:999px;opacity:.55;transition:opacity .3s}
+#ctrl:hover{opacity:1}
+#ctrl button{width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(217,180,95,.6);background:rgba(5,22,31,.7);color:var(--gold1);font-size:20px;cursor:pointer;font-family:var(--font)}
+#ctrl button:hover{background:rgba(217,180,95,.2)}
+#dots{display:flex;gap:9px;direction:rtl}
+#dots i{width:14px;height:14px;border-radius:50%;background:rgba(217,180,95,.25);border:1.5px solid rgba(217,180,95,.55);cursor:pointer;transition:all .3s}
+#dots i.on{background:var(--gold2);transform:scale(1.35)}
+#dots i.done{background:rgba(217,180,95,.6)}
+
+/* ---------- title overlay ---------- */
+#intro{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:radial-gradient(900px 600px at 50% 40%,rgba(18,86,104,.55),transparent 70%),linear-gradient(160deg,#08222e,#020a10);transition:opacity 1s}
+#intro.hide{opacity:0;visibility:hidden;pointer-events:none;transition:opacity 1s,visibility 0s 1s}
+#intro .k{font-size:28px;color:var(--gold2);margin-bottom:14px}
+#intro h1{font-size:96px;font-weight:900;line-height:1.25;margin-bottom:22px}
+#intro p{font-size:34px;color:#c5d3d8;max-width:1100px;line-height:1.8;margin-bottom:46px}
+#intro button{font-family:var(--font);font-size:36px;font-weight:800;padding:20px 64px;border-radius:999px;border:2px solid var(--gold2);background:linear-gradient(135deg,#f7e9b9,#d9b45f);color:#0a1c25;cursor:pointer;box-shadow:0 0 0 0 rgba(247,233,185,.6);animation:mkp 1.8s ease-out infinite}
+#intro .d{margin-top:40px;font-size:20px;color:var(--mute);max-width:1000px;line-height:1.7}
+#intro .lg{margin-bottom:30px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="gg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="600" y2="600"><stop offset="0" stop-color="#f7e9b9"/><stop offset=".4" stop-color="#d9b45f"/><stop offset=".7" stop-color="#fff0c2"/><stop offset="1" stop-color="#a8812f"/></linearGradient>
+    <linearGradient id="spot" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="600"><stop offset="0" stop-color="#f7e9b9" stop-opacity=".4"/><stop offset="1" stop-color="#f7e9b9" stop-opacity="0"/></linearGradient>
+    <linearGradient id="heroBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#14566a"/><stop offset="1" stop-color="#082632"/></linearGradient>
+    <linearGradient id="heroHead" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1a6379"/><stop offset="1" stop-color="#0a2e3c"/></linearGradient>
+    <radialGradient id="glow"><stop offset="0" stop-color="#d9b45f" stop-opacity=".55"/><stop offset="1" stop-color="#d9b45f" stop-opacity="0"/></radialGradient>
+  </defs>
+</svg>
+
+<div id="stage">
+  <div id="bgfar"></div>
+  <div id="world"></div>
+  <canvas id="dust" width="1920" height="1080"></canvas>
+
+  <div id="hero" class="idle">
+    <svg viewBox="0 0 300 470">
+      <ellipse cx="150" cy="452" rx="88" ry="12" fill="rgba(0,0,0,.4)"/>
+      <g class="lg legB"><rect x="158" y="296" width="30" height="116" rx="15" fill="#0a2c38" stroke="url(#gg)" stroke-width="3"/><rect x="146" y="404" width="62" height="32" rx="16" fill="#061b26" stroke="url(#gg)" stroke-width="3"/></g>
+      <g class="lg legF"><rect x="114" y="296" width="30" height="116" rx="15" fill="#0f4656" stroke="url(#gg)" stroke-width="3"/><rect x="96" y="404" width="62" height="32" rx="16" fill="#061b26" stroke="url(#gg)" stroke-width="3"/></g>
+      <g class="bodyg">
+        <g class="arm armB"><rect x="190" y="186" width="26" height="112" rx="13" fill="#0a2c38" stroke="url(#gg)" stroke-width="3"/><circle cx="203" cy="304" r="15" fill="#0f4656" stroke="url(#gg)" stroke-width="3"/></g>
+        <rect x="96" y="172" width="108" height="140" rx="40" fill="url(#heroBody)" stroke="url(#gg)" stroke-width="3.5"/>
+        <polygon points="150,208 175,222 175,250 150,264 125,250 125,222" fill="#0b3340" stroke="url(#gg)" stroke-width="3"/>
+        <text x="150" y="248" text-anchor="middle" font-size="30" font-weight="800" fill="#f7e9b9" style="font-family:'Segoe UI',Arial,sans-serif">A</text>
+        <path d="M106 296h88" stroke="url(#gg)" stroke-width="3" stroke-linecap="round"/>
+        <g class="arm armF"><rect x="97" y="186" width="26" height="112" rx="13" fill="#0f4656" stroke="url(#gg)" stroke-width="3"/><circle cx="110" cy="304" r="15" fill="#14566a" stroke="url(#gg)" stroke-width="3"/></g>
+        <g class="headg">
+          <line x1="150" y1="92" x2="150" y2="66" stroke="url(#gg)" stroke-width="4"/>
+          <circle cx="150" cy="60" r="9" fill="#f7e9b9"><animate attributeName="opacity" values="1;.35;1" dur="2s" repeatCount="indefinite"/></circle>
+          <circle cx="84" cy="134" r="10" fill="#0f4656" stroke="url(#gg)" stroke-width="3"/><circle cx="216" cy="134" r="10" fill="#0f4656" stroke="url(#gg)" stroke-width="3"/>
+          <rect x="88" y="90" width="124" height="86" rx="38" fill="url(#heroHead)" stroke="url(#gg)" stroke-width="3.5"/>
+          <rect x="98" y="108" width="104" height="50" rx="24" fill="#020a10" stroke="url(#gg)" stroke-width="2"/>
+          <ellipse class="eye" cx="124" cy="130" rx="9" ry="12" fill="#f7e9b9"/><ellipse class="eye" cx="166" cy="130" rx="9" ry="12" fill="#f7e9b9"/>
+          <path class="mouth" d="M128 148q22 9 44 0" fill="none" stroke="#d9b45f" stroke-width="3.5" stroke-linecap="round"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div id="bubble" class="box"></div>
+  <div id="panel" class="box"><h3 class="gold" id="ptitle"></h3><div class="st" id="pstep"></div><div id="items"></div></div>
+
+  <div id="brandhud"><svg viewBox="0 0 600 600"><polygon points="300,170 412,235 412,365 300,430 188,365 188,235" fill="none" stroke="url(#gg)" stroke-width="26" stroke-linejoin="round"/><path d="M300 240L252 362M300 240L348 362M270 326H330" fill="none" stroke="url(#gg)" stroke-width="26" stroke-linecap="round"/></svg>AIGENT</div>
+  <div id="caption">تحلیل اولیه بر پایهٔ اطلاعات عمومی (سایت‌ها و اینستاگرام، ۲۰ آبان ۱۴۰۵)؛ تأیید یا نظر رسمی اتاق تعاون استان تهران نیست.</div>
+
+  <div id="ctrl"><button id="next" title="ایستگاه بعد">&#10094;</button><button id="play" title="توقف / ادامه">&#10074;&#10074;</button><button id="prev" title="ایستگاه قبل">&#10095;</button><div id="dots"></div><button id="fs" title="تمام‌صفحه">&#9974;</button></div>
+
+  <div id="intro">
+    <svg class="lg" width="150" height="150" viewBox="0 0 600 600"><polygon points="300,150 430,225 430,375 300,450 170,375 170,225" fill="#0b3340" stroke="url(#gg)" stroke-width="16" stroke-linejoin="round"/><path d="M300 235L246 372M300 235L354 372M268 330H332" fill="none" stroke="url(#gg)" stroke-width="22" stroke-linecap="round"/></svg>
+    <div class="k">AIgent · گشت دیجیتالی ویژهٔ سازمان‌ها</div>
+    <h1 class="gold">سفر دیجیتال در<br>اتاق تعاون استان تهران</h1>
+    <p>«ایجنت» وارد ساختمان می‌شود و ایستگاه‌به‌ایستگاه نشانتان می‌دهد چه چیزی خوب کار می‌کند، کجا می‌شود قوی‌تر شد و کدام سرویس به رشد دیجیتال کمک می‌کند.</p>
+    <button id="start">&#9654; شروع فیلم</button>
+    <div class="d">این ارائه فقط از صفحه‌های عمومی tpcc.ir، news.tpcc.ir و اینستاگرام tpcc.news ساخته شده و تأیید رسمی اتاق تعاون نیست. بیش از ۵ دقیقه طول می‌کشد؛ با Space متوقف کنید، با ← و → ایستگاه عوض کنید.</div>
+  </div>
+</div>
+
+<script>window.DECK={"brand": {"name": "AIgent", "fa": "ایجنت", "tagline": "آژانس دیجیتال‌مارکتینگ و اتوماسیون هوشمند", "instagram": "iranaigent", "year": "۱۴۰۵"}, "services": [{"id": "web", "name": "طراحی وب‌سایت", "short": "سایت سریع، زیبا و فروش‌محور"}, {"id": "forms", "name": "پلتفرم و فرم آنلاین", "short": "نوبت‌دهی، رزرو، ثبت‌نام و سفارش"}, {"id": "manage", "name": "مدیریت پیج و سایت", "short": "محتوا، انتشار و گزارش ماهانه"}, {"id": "seo", "name": "سئو و بهینه‌سازی", "short": "دیده‌شدن در گوگل و سرعت بالا"}, {"id": "brand", "name": "برندسازی دیجیتال", "short": "هویت، لحن و برندبوک کامل"}, {"id": "logo", "name": "لوگو و آواتار", "short": "نماد ماندگار و کاراکتر برند"}, {"id": "auto", "name": "اتوماسیون و عامل هوشمند", "short": "چت‌بات، CRM و فرایند خودکار"}, {"id": "acct", "name": "حسابداری دیجیتال و حسابرسی", "short": "پنل مالی اختصاصی، آنالیز و حسابرسی"}], "tiers": [{"id": "basic", "name": "پکیج پایه", "items": {"web": ["سایت وردپرس ریسپانسیو: شرکتی ۲۵ میلیون، خدماتی ۳۰، فروشگاهی ۴۰، رزرو و نوبت‌دهی ۵۰", 25000000, "از", ""], "forms": ["۳ فرم آنلاین (تماس، ثبت‌نام، نظرسنجی) با اعلان خودکار", 6000000, "", ""], "manage": ["۱۲ پست، ۱۲ استوری و ۲ ریلز در ماه، یک پلتفرم", 12000000, "", "/ماه"], "seo": ["سئوی فنی پایه، ۵ صفحه و ۳ کلمهٔ کلیدی", 10000000, "", ""], "brand": ["پالت رنگ، فونت‌ها و راهنمای هویت مینی", 12000000, "", ""], "logo": ["لوگو با ۲ پیشنهاد اولیه و یک آواتار", 4500000, "", ""], "auto": ["یک اتوماسیون (پاسخ خودکار یا اعلان سفارش)", 9000000, "", ""], "acct": ["راه‌اندازی داشبورد مالی روی نرم‌افزار فعلی شما و ۵ گزارش مدیریتی", 15000000, "از", ""]}}, {"id": "pro", "name": "پکیج حرفه‌ای", "items": {"web": ["سایت نیمه‌اختصاصی کدنویسی‌شده با پنل مدیریت، انیمیشن و سئوی ساختاری", 70000000, "از", ""], "forms": ["پلتفرم نوبت‌دهی یا سفارش با پرداخت آنلاین و پنل", 18000000, "", ""], "manage": ["۳۰ محتوا و ۸ ریلز، دو پلتفرم، پاسخ به دایرکت و گزارش ماهانه", 30000000, "", "/ماه"], "seo": ["سئوی کامل، تحلیل رقبا، ۱۰ مقاله و ۶ کلمهٔ کلیدی", 30000000, "", ""], "brand": ["هویت کامل، برندبوک و لحن برند", 38000000, "", ""], "logo": ["لوگو، ست ۳ آواتار و موشن‌لوگو", 14000000, "", ""], "auto": ["۳ اتوماسیون و چت‌بات پاسخ‌گو در سایت و دایرکت", 28000000, "", ""], "acct": ["پنل حسابداری اختصاصی: اسناد، فاکتور، انبار و گزارش‌های مالی", 60000000, "از", ""]}}, {"id": "exclusive", "name": "پکیج اختصاصی", "items": {"web": ["طراحی کاملاً اختصاصی: شرکتی ۱۲۰ میلیون، خدماتی ۱۴۰، فروشگاهی و رزرو ۱۸۰", 120000000, "از", ""], "forms": ["پلتفرم کامل: CRM، باشگاه مشتریان یا پورتال سازمانی", 45000000, "از", ""], "manage": ["تیم اختصاصی، ۱۵ پست و ریلز ویژه، تولید ویدیو و مدیریت تبلیغات", 55000000, "از", "/ماه"], "seo": ["سئوی جامع ماهانه: لینک‌سازی، سئوی محلی و بین‌المللی، گزارش تحلیلی", 80000000, "از", "/ماه"], "brand": ["استراتژی برند و بازطراحی کامل هویت", 120000000, "از", ""], "logo": ["لوگوی اختصاصی، کاراکتر برند و انیمیشن", 40000000, "از", ""], "auto": ["عامل هوشمند AIgent اختصاصی با اتصال به سیستم‌های شما", 90000000, "از", ""], "acct": ["نرم‌افزار و پنل مالی کاملاً اختصاصی با آنالیز هوشمند، حسابرسی و اتصال به سامانهٔ مودیان", 250000000, "از", ""]}}], "share": {"url": "https://iranaigent.github.io/Prices-plans-AIgent/", "qrData": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABHwAAAR8CAIAAABg6hR4AABKOUlEQVR42u3YgRHEMAjEQPfftNNEMo7RqgJ/gAP92gAAAACAz1g+AQAAAACQLgAAAAAgXQAAAAAA0gUAAAAApAsAAAAASBcAAAAAgHQBAAAAAOkCAAAAANIFAAAAACBdAAAAAEC6AAAAAIB0AQAAAABIFwAAAACQLgAAAAAgXQAAAAAA0gUAAAAApAsAAAAASBcAAAAAgHQBAAAAAOkCAAAAAJAuAAAAACBdAAAAAEC6AAAAAACkCwAAAABIFwAAAACQLgAAAAAA6QIAAAAA0gUAAAAApAsAAAAAQLoAAAAAgHQBAAAAAOkCAAAAAJAuAAAAACBdAAAAAEC6AAAAAACkCwAAAABIFwAAAACAdAEAAAAA6QIAAAAA0gUAAAAAIF0AAAAAQLoAAAAAgHQBAAAAAEgXAAAAAJAuAAAAACBdAAAAAADSBQAAAACkCwAAAABIFwAAAACAdAEAAAAA6QIAAAAA0gUAAAAAIF0AAAAAQLoAAAAAAKQLAAAAAEgXAAAAAJAuAAAAAADpAgAAAADSBQAAAACkCwAAAABAugAAAACAdAEAAAAA6QIAAAAAkC4AAAAAIF0AAAAAQLoAAAAAAKQLAAAAAEgXAAAAAJAuAAAAAADpAgAAAADSBQAAAAAgXQAAAABAugAAAACAdAEAAAAASBcAAAAAkC4AAAAAIF0AAAAAANIFAAAAAKQLAAAAAEgXAAAAAIB0AQAAAADpAgAAAADSBQAAAAAgXQAAAABAugAAAACAdAEAAAAASBcAAAAAkC4AAAAAAOkCAAAAANIFAAAAAKQLAAAAAEC6AAAAAIB0AQAAAADpAgAAAACQLgAAAAAgXQAAAABAugAAAAAApAsAAAAASBcAAAAAkC4AAAAAAOkCAAAAANIFAAAAAKQLAAAAAEC6AAAAAIB0AQAAAABIFwAAAACQLgAAAAAgXQAAAAAA0gUAAAAApAsAAAAASBcAAAAAgHSd+aDAS5im5rzLpeYcqVFzNvUS5CfpgrCDsAPpMkd2B+nSSzCbIF3CDsIOpEsuOZTViHTpJbhDSJcjDBB25p10mSM1Il16CfKTdEHYQdiBdJkju4N06SXAHUK6hB2EHUiXXHIoqxHp0kuQn6TLEQYIO/NOusyRGpEuvQSzCdIl7CDsQLrMkd1BuvQS4A4hXY4wCDuQLrnkUFYj0qWXID9JF4QdhJ15J13mSI1Il16C2QTpEnYQdiBd5sjuIF16CXCHkC5HGCDsSJdcciirEenSS5CfpAvCDsIOpMscqRHp0kswmyBdwg7CDqTLQW93kC69BLhDSJcjDBB25p10kS41Il16CfKTdEHYQdiBdJkju4N06SWYTZAuYQdhB9IllxzKpEsvAe4Q0uUIA4SdeSdd5kiNSJdegvwkXRB2EHYgXebI7iBdeglmE6RL2EHYgXTJJYeyGpEuvQR3COlyhAHCzryTLnOkRqRLL0F+ki4IOwg7kC5zZHeQLr0EuENIl7CDsAPpkksOZTUiXXoJ8pN0OcIAYWfeSZc5UiPSpZdgNkG6hB2EHUiXObI7SJdeAtwhpMsRBmEH0iWXHMpqRLr0EuQn6YKwg7Az76TLHKkR6dJLMJsgXcIOwg6kyxzZHaRLLwHuENLlCNP06m7BO+zUXd290970PaHupAuaHuru+FZ3dfdOc2QfQd1BujQ91N3x7VhUdzLjnfaR76nu6k66NL2mV3fHt+Nb3dXdO+1N3xPqTrqg6aHujm91V3cyY47sI6g7SJemh7o7vh2L6q7u3mkf+Z7qru6kS9NrenV3fDu+1V3dvdPe9D2h7qQLmh7q7vhWd3UnM95pH0HdQbo0PdTd8e1YVHd190570/dUd3UnXZpe06u749vxre7q7p3myD6CupMuaHqou+Nb3dWdzHinfeR7qru6ky5ND3V3fDsW1V3dvdPe9D2h7qRL02t6dXd8O77VXd290xzZR1B3kC5ND3V3fKu7upMZ77SPfE91V3fSpel9VXV3fDsW1V3dvdPe9D2h7qQLml7dHd+Ob3VXd+80R/YR1B2kS9ND3R3f6q7uZMY77SPfU93VnXRpek2v7o5vx6K6q7t32pu+J9SddEHTQ90d3+qu7t5pjuwjqDtIl6aHuju+HYvqTma80z7yPdVd3UmXptf06u74dnyru7p7p73pe0LdSRc0PdTd8a3u6k5mzJF9BHUH6dL0UHfHt2NR3dXdO+0j31Pd1Z10aXpNr+6Ob8e3uqu7d9qbvifUnXRB00PdHd/qru5kxjvtI6g7SJemh7o7vh2L6q7u3mlv+p7qru6kS9NrenV3fDu+1V3dvdMc2UdQd9IFTQ91d3yru7qTGe+0j3xPdVd30qXpSweTo0Hd9af+dDSQbf3pnXJefpIuCDthp+7Qn44GO84cead9pO4gXaRL2Ak70qU/vROkyxzZR/pTfpIuC0nYCTt1J13609FAuvSnd8p5+Um6IOyEnbpDfzoa7Dhz5J32kbqDdJEuYSfs1F1/OhZBusyRfaQ/5SfpspCEnbBTd+hPRwPp0p/eKeflJ+mCsBN26g796Z0gXd5pH6k7SBfpEnbCTt31p/50NJAuc2Qf6U/5SbosJGEn7NQd+tPRYMeZI++U8/KTdEHYCTt1h/70TpAuc2QfqTtIF+kSdsJO3fWn/nQ0kC796Z1yXn6SLgtJ2Ak7dYf+dDTYcebIO+0jdSddEHbCTt2hP70TpMsc2Uf6U36SLtIl7ISduutP/eloIF360zvlvPwkXRaSsBN26g796Wiw48yRd9pH6g7SRbqEnbpDf3onSJc5so/0p/wkXRaSsBN26q4/9aejgXTpT++U8/KTdEHYCTt1h/50NNhx5sg77SN1B+kiXcJO2JEu/emdIF3myD7Sn/KTdFlIwk7YqTvp0p+OBtKlP71TzstP0gVhJ+zUHfrT0WDHmSPvtI/UHaSLdAk7Yafu+tOxCNJljuwj/Sk/SZeFJOyEnbpDfzoaSJf+9E45Lz9JF4SdsFN36E/vhDnyTvtI3UG6SJewE3bqrj/1p6OBdJkj+0h/yk/SZSEJO2Gn7tCfjgY7zhx5p5yXn6QLwk7YqTv0p3eCdJkj+0jdQbpIl7ATduqu7iAed/eSefdO+8g+Il0QdsJO3dXdkgPpsje90z5Sd5Auy0PYCTt1V3eQLtJl3u0j+8g+Il2WsbATduqu7pacnCdd8tM77SP7iHRB2Ak7dVd3Sw6ky970TvvIPgLpsjyEnbBTd3UH6SJd5t077SP7iHRZxsJO2Km7ultycp50yU/vtI/UHT6osBN26q7ulhxIl73pnfaRfWQfkS7SJeyEnbqrO0gX6TLv3mkf2UekC8JO2Km7ultycp50yU/vtI/UHaTL8hB26q7ulhxIl73pnfaRfWQfkS7LWNgJO3VXd5Au0mXevdM+so9IF4SdsFN3dbfk5Dzpkp/eaR+pO0iX5SHshJ26W3IgXfamd9pH9pF9RLosY2En7NRd3S050kW6zLt32kf2EemCsBN26q7ulpycJ13y0zvtI3UH6bI8hJ2wU3d1B+myN73TPrKP7CPSZRkLO2Gn7upuycl50mXevdM+so9IF4SdsFN3dbfkQLrsTe+0j9QdpMvyEHbCTt3VHaSLdJl3+8g+so9Il2Us7ISduqu7JSfnSZf89E77yD4iXRB2wk7d1d2SA+myN73TPrKPQLosD2En7NRd3UG6SJd59077yD4iXZaxsBN26q7ulpycJ13y0zvtI3W3O3wCYSfs1F3dLTmQLnvTO+0j+8g+Il2kS9gJO3VXd5Au0mXevdM+so9IF4SdsFN3dbfk5Dzpkp/eaR+pO0iX5SHs1F3dLTmQLnvTO+0j+8g+Il2WsbATdo5FmHe95Ajz2+0juaTnSReEnbBTd0FPuvSSfeS3++1yyR0C0iXshJ2wI11yybyrO/Hw2+0jd4j8JF2WnLATduou6EmXXnKE+e32kVzS86QLwk7YqbtDWS6RLvvIb/fb5ZI7BKRL2Ak7YUe6YN5JF/Hw2+0jd4j8JF2WnLATduou6EmXXiIefrt9JJf0POmCsBN26u5QlkvmXd2Jh98ul9whIF3CTtgJO9IF866XHGF+u33kDpGfpMuSE3bCTt0FPenSS/aR3+63yyU9T7og7ISdujuU5ZJ5V3fi4bfbR+4QkC5hJ+yEHemCeddLjjC/3T6SS6SLdFlywk7YqbugJ116yT7y2/12ueQOIV0QdsJO3R3Kcsm8qzvx8NvtI3eI/CRdwk7YCTvSBfOulxxhfrt9JJf0POmCsBN26i7oSZdeso/8dr9dLrlDQLqEnbBTd4eyXDLv6k48/Hb7yB0iP0mXJSfshB3pgnnXS44wv90+kkt6nnRB2Ak7dRf0pEsv2Ud+u98ul9whIF3CTtgJO9Ill8y7uhMPv90+cofIT9JlyQk7Yafugt686yVHmN9uH8klPU+6IOyEnbo7lOUS6bKP/Ha/XS65Q0C6hJ2wE3akC+addBEPv90+cofIT9JlyQk7Yafugp506SXi4bfbR3JJz5MuCDthp+4OZblk3tWdePjtcskdAtIl7ISdsCNdMO96yRHmt9tH7hD5SbosOWEn7NRd0JMuvWQf+e1+u1zS86QLwk7YqbtDWS6Zd3UnHn67feQOAekSdlB373TQQ4bIEKgR1J10aXpNr+4OJtIFmE1zpJeg7qQLmh4OJtJlNiFD7Di9pEbqru6kS9ND3b2TdEGGyBCoEdSddEHTq7uDiXQBZtMc6SWoO0iXpoeDiXSZTcgQO04vqZG6qzvp0vSaXt29k3RBhsgQqBHUnXRB08PBRLoAs2mO9BLUHaRL00PdSZfZhAyx4/SSGqm7upMuTa/p1d3BRLogQ2QI1AjqTrqg6eFgIl1mE2bTHOklqDtIl6aHunsn6YIMseP0khqpu7qTLk2v6dXdwUS6ABkCNYK6ky5oejiYSJfZhAyx4/QS1B2kS9ND3b2TdEGGyBC9pEbqru6kS9NrenV3MJEuwGyaI3cI1J10QdPDwUS6zCZkiB2nl9RI3UG6ND3U3TtJF2SIDIEaQd1Jl6bX9OruYCJdgNk0R3oJ6k66oOnhYCJdZhMyxI7TS2qk7upOujQ91N07SRdkiAyBGkHdSZcPqunV3cFEugCzaY70EtQdpEvTw8FEuswmZIgdp5fUSN3VnXRpek2v7t5JuiBDZAjUCOpOuqDp4WAiXYDZNEd6CeoO0qXpoe6ky2xChthxekmN1F3dSZem1/Tq7mAiXZAhMgRqBHUnXdD0cDCRLrMJs2mO9BLUHaRrUtOjicPOO73TO73TO90h8Mci6YKwA+nyTu/0Tu/0TtIFdwhIF+mCsHM0eKd3eqd3eidAukgX6QIcDd7pnd7pnd7pDgHpIl0QdiBd3umd3umd3km64A4B6SJdEHaOBu/0Tu/0Tu8ESBfpIl2Ao8E7vdM7vdM73SEgXaQLwg6kyzu90zu90ztJF9whIF2kC8LO0eCd3umd3umd7hCQLtJFugBHg3d6p3d6p3eSLpAu0gVhB9Llnd7pnd7pnd4JdwhIF+mCsHM0eKd3eqd3eqc7BKSLdJEuwNHgnd7pnd7pnaQL7hD4oMIOpMs7vdM7vdM7vRMgXaSLdEHYORq80zu90zu90x0C0kW6IOzgaPBO7/RO7/RO0gV3CEgX6QLp8k7v9E7v9E7vBEgX6SJdEHaOBu/0Tu/0Tu90h4B0kS4IO5Au7/RO7/RO7yRdcIeAdJEuCDtHg3d6p3d6p3cCpIt0kS7A0eCd3umd3umd7hCQLtIFYQfS5Z3e6Z3e6Z2kC+4QkC7SBWHnaPBO7/RO7/ROgHSRLtIFOBq80zu90zu90x0C0kW6IOxAurzTO73TO72TdMEdAtJFuiDsHA3e6Z3e6Z3e6Q4B6SJdpAtwNHind3qnd3on6QLpIl0QdiBd3umd3umd3umdcIeAdAGYvIzL31N/OmpBugCQLgCOWtLlCCNdIF3mHQDpAkC6SIL+JF2ky7wDIF0ASBfpcoSRLpAuAKQLgKOWdDnCfE/SRbrMOwDSBYB0kQT9SbpAugCQLgCki3Q5wkgXSJd5B0gXAEct6XKE+Z6ki3SZdwCkCwDpIgn6k3SBdAEgXQBIF+lyhJEukC7zDpAuAI5a0uUI8z1JF+ky7wBIFwDSRRL0J+kC6QJAugCQLtLlCCNdIF3mHQDpAhy1pMsR5nuSLtJl3gGQLgCkiyToT9IF0gWAdAEgXaTLEUa6QLrMOwDSBYB0OcJ8T9JFusw7ANIFgHSRLv1JukC6AJAuAI5a0uUII10gXeYdAOkCQLpIgv4kXaTLvAMgXQBIF+lyhJEukC4ApAuAo5Z0OcJ8T9JFusw7ANIFgHSRBP1JukC6AJAuAKSLdDnCSBdIF+kCSBcARy3pcoT5nqSLdJl3AKQLAOkiCfqTdIF0ASBdAEgX6XKEkS6QLvMOkC4AjlrS5QjzPUkX6TLvAEiXo8HR4GjQ83pef+pPNTJHvqe6g3T5oEIZDiY9rz/1J+kym7IOpAuky4IXeUJZz0N/ki7SRbogP0G6SJdQFsp6Xs/rT/2pRubI91R3kC5Y8HDU6nn9qT9Jl9mUdSBdIF0WvFAWynoe+pN0kS7SBfkJ0kW6hDIcTHpef+pPNTJHvqe6g3TBgodQ1vP6U3+SLrMp60C6QLoseKEslPW8ntefpIt0kS7IT5Au0iWU4WDS8/pTf5Iuc+R7qjtIFyx4CGU9D/1JukiXrAPpAumy4IWyUNbzel5/6k81Il2QnyBdpEsow8Gk5/Wn/iRdZlPWqTtIFyx4CGU9D/1JukgX6QLpAumy4IWyUNbzel5/6k81Mke+p7qDdJEuoQwHk57Xn/qTdJlNWQfSRbpgwUMo63noT9JFukgX5CdIlwUvlIWyntfz+lN/qpE58j3VHaSLdAllOJj0vP7Un6TLbMo6kC6QLgseQlnPQ3+SLtJFuiA/QbpIl1AWynpez+tP/alG5sj3VHeQLljwcNTqef2pP0mX2ZR1IF0gXRa8UBbKeh76k3SRLtIF+QnSRbqEMhxMel5/6k81Mke+p7qDdMGCh1DW8/pTf5IusynrQLpAuix4oSyU9bye15+ki3SRLshPkC7SJZThYNLz+lN/qpE58j3VHaQLFjyEsp6H/iRdpEvWgXSBdFnwFqcA1fP6U8+ru16yi9Xdb3fbkC4HqKB3NOh5y1jPyyU4QEmX367nSRc0veNGMJEuyCU4QPU86dLzIF0OUEHvANXz+lPPq7tesouJh9/utiFdDlBB72jQ85axnpdLcIDqeTmv50kXNL3jRjCRLsglOED1vLr77W4b0uUAFfQOUD2vP/W8uuslu5h4+O16nnSRLkHvaNDzlrGel0twgOp5Oa/nQbpIl+NGMJEuyCU4QPW8uvvtbhvS5QAV9A5QPa8/9by66yW7mHj47XqedEHTO270vGWs5+USHKB6Xs7reZAuB6igd4CSLsglOED1vLr77W4b0uUAFfSOBj1PuvS8uuslu5h4+O16nnRB0ztuBBPpcijLJThA9byc1/MgXQ5QQe8A1fP6k3TBAarn1d1vd9uQLgeooHc06HnLWM/LJb1kFxMPv13Pky5oeseNYCJdkEtwgOp5Oa/nQbocoILeAarn9aeeV3e9ZBeru9/utiFdDlBB72jQ85axnpdLcICSLr9dz5MuaHrHjWAiXZBLcIDqedKl50G6HKCC3gGq5/Wnnld3vWQXEw+/3W1Duhyggt7RoOctYz0vl+AA1fNyXs+TLmh6x41gIl2QS3CA6nl199vdNqTLASroHaB6Xn/qeXXXS3Yx8fDb9TzpIl2C3tGg5y1jPS+X4ADV83Jez4N0kS7HjWAiXZBLcIDqeXX32902pMsBKugdoHpef+p5dddLdjHx8Nv1POmCpiddet4y1vNyCQ5QPS/n9TxIlwPU9xR2+tPBBMe3GslP+53IgXQJEYMklL1ThsBxo5fkp6wjXXqJdEEo+57eqT8dyg56vUS65Ke9KZdAuoSI72kZ6089D9KlRvLTfiddIF1CxCAJZe+EQ5l06SX5KetIl14iXRDKvqd36k+HMkgX6ZKf9qZcAukSIr6nZaw/9TwcN3pJftrvpAukS4gYJKHsnXAoO+j1Eumy30mXXiJdEMq+p3fqT4cySJcayU/7XS6BdAkR39My1p96Ho4bvSQ/ZR3pAukSIgZJKHsnHMoOer1EuuSnvUm6SBeEsu/pnfrToQzSpUby034nXSBdQsT3tIz1p56H40YvyU9ZR7r0EulyMBkkoeydcCg76PUS6ZKf9qZcAukiXb6nd+pPhzJIlxrJT/uddIF0CRGhbBnrTz0Px41ekp+yjnTpJdIFoSyUvRMOZQe9XiJd8tPelEsgXULE9yRd+tOhDNKlRvLTfiddIF1CxCAJZe/U83Dc6CX5KetIl14iXRDKvqd36k+HsoNeL5Eu+WlvyiWQLiHie1rG+lPPg3Spkfy030kXSJcQMUhC2TvhUCZdekl+yjrSpZdIF4Sy7+md+tOhDNJFuuSnvSmXQLqEiO9pGetPPQ/HDemSn/Y76QLpEiIGSSh7JxzKDnq9RLpkHenSS6QLQtn39E796VAG6VIj+Wm/yyWQLiHie1rG+lPPw3Gjl+SnrCNdIF1CxCAJZe+EQ9lBr5dIl/y0N0kX6QKEsu/pe6oRSQCInHmH/U664AAVIr6nGjnCANJl3kG6SBdgIfmeUCNHGByg5t2863mQLjhAfU/fU40cYQDpMu+w30kXHKBCxPdUI0cYQLrMO0gX6QIcoL4n1MgRBgeoeTfveh6kCw5Q0uV7qpEjDCBd5h32O+kCLCTfU40cYQDpMu8gXaQLcID6nr6nGjnC4AA17+Zdz4N0wQEqRHxPNXKEAaTLvMN+J12AheR7Qo0cYSBd5h2ki3QBDlDf0/dUI0cYHKDm3bzreZAuOECFiO+pRo4wgHSZd9jvpAuwkHxPqJEjDKTLvIN0kS7AAep7+p5q5AgDSJd51/MgXXCAChHfU40cYQDpMu+w30kXYCH5nlAjRxgcoObdvJMu0gU4QH1P31ONHGEA6TLvsN9JFxygQsT3VCNHGEC6zDtIF+kCLCTfE2rkCIMD1Lybdz0P0gUHqO/pe6qRIwwgXeYd9jvpggNUiPieauQIA0iXeQfpIl2AA9T3hBo5wuAANe/mXc+DdMEBSrp8TzVyhAGky7zDfiddgIXke6qRIwwgXeYdpIt0AQ5Q31Moq5EjDA5Q827e9TxIFxygQsT3VCNHGEC6zDvsd9IFWEi+J9TIEQbSZd5BukgXhIig9z19zzsPJu+0j2p1t4vVSIaAdFlygkmNfE+HiHeSLtJlb5IuuxikC4KJJPievqej1jvtIwe9Xey2AUiXA1QwkQTfkyR4p4NJ3aFGpAuky5ITTGrkezpEvJN0kS57U9b5niBdEEwkwff0PR213mkfOejtYjWSISBdDlDBRBJ8T5LgnQ4mdYca2cUgXaRLMKmR7+kQ8U7SRbrsTVnnewKki3SRBN/T93TUeqd95KC3i9VIhoB0WXKCiST4niTBOx1M6g41sotBuiCYSILv6RDxTtJFuuxNWed7AqTLASqYSJfv6aj1TvvIQW8Xq5EMAemy5ASTGvmeJME7HUzqDjWyi0G6IJhIgu/pe5IZ0kW67E1Z53sCpMsBKphIgu9JErzTPnLQ28VqJENAuiw5waRGvqdDxDtJl7pDjexikC4IJpLge/qejlrvJF32pqzzPQHS5QAVTCTB9yQJ3ulgIl12sRrJEJAuS04wqZHv6RDxTtJFuuxNNbKLQbogmEiC7+l7Omq90z5y0NvFbhuAdDlABRNJ8D1Jgnc6mNQdakS6QLosOcGkRr6nQ8Q7SRfpsjdlne8J0gXBRBJ8T9/TUeud9pGD3i5WIxkC0uUAFUwkwfckCd7pYFJ3qJFdDNJlyQkmNfI9HSLeSbpIl70p63xPgHSRLpLge/qejlrvtI8c9HaxGskQkC5LTjCRBN+TJHing0ndoUZ2MUgXBBNJ8D0dIt5JukiXvSnrfE+AdDlAhQgsY+LhnTKZGMtk/QmzSbqEnUGCnidd3imTHfRQI/tILpEuWPCAJUdmSJej1j5SI/vIjgPpMvAGCXqedHmnTHbQy2T9CbNJuoSdQYKet5DIDOly0EON7CO5RLpgwQOWHJnxTtJlH6mRfWTHgXQZeIMEPU+6vFMmO+hlsv6E2SRdws4gQc9bSGSGdDlq7SM1so/kEumCBQ9YcmTGO2Wyg14m20d2HEiXgTdI0POkyztlsoMeakS6zCbpEnYGCXreQiIzpMtRax+pkX1EukgXLHjAkiMz3imTHfQyWX/CbJIuA2+QoOdJl3fKZAc91Mg+kkukS9gZJOh5C4nMkC5HrX2kRvaRHQfSZcEDlhyZ8U6Z7KCXyfoTZpN0CTuDBD1PurxTJjvooUb2kVwiXbDgoectJDJDuhy19pEa2Ud2HEiXgTdIsOTIjHfKZAe9TNafMJukS9gZJOh50uWdMtlBDzWyj+QS6YIFD5AuMkO6HLX2kRrZR3YcSJeBN0jQ86TLO2Wyg14m60+YTdIl7AwS9LyFRGZIl4MeamQfySXSBQsesOTIjHeSLvtIjewjOw6ky8AbJOh50uWdMtlBL5P1J8wm6RJ2Bgl63kIiM6TLUWsfqZF9JJdIFyx4wJIjM94pkx30pMs+suNAugy8QYKeJ13eKZMd9FAjmmQ2SZewM0jQ8xYSmSFdjlr7SI3sI9JFuuAQcdQKUItTf+p5Oe+dss5s+p4gXaTLUSuUHSL6EyTBO2Wd2fQ9SRfpIl2CyW8XyvpTf6qRd5Iu8y4/7XeQLktOKAtlh4j+1PNy3jtlndn0PUG6SJejVig7RPQnSIJ3yjqz6XuSLtIFS04oC2X9qT/VyDtJl3mXn/Y7SBfpctQKZYeI/tTzct47ZZ3Z9D1BukiXYPLbSZf+BEnwTllnNn1P0kW6YMkJZaFMuvSnGnkn6TLv8tN+B+kiXY5aoewQ0Z96Xs57p6wzm74nSBfpEkx+u1DWn/qTJHinrDObvifpIl2w5ISyUHaI6E89T2ZIl3mXn/Y7SBfpctQKZYeI/gRJ8E5ZZzZ9T5Au0iWY/HahrD/1pxp5J+kym74n6SJdsOSEslB2iOhPPS/nvZN0yU/7HaSLdDlqhbJDRH+CJHinrDObvidIF+kSTH67UNaf+lONvJN0mXf5SbpIFyw5oSyUHSL6U8/Lee+UdWbT9wTpIl2OWqHsENGfIAneKevMpu9JukgX6RJMfrtQ1p/6U428k3SZd/lpv4N0WXJCWSg7RPSnnpfz3inrzKbvCdJFuhy1Qtkhoj9BErxT1plN35N0kS5Ycn67UNaf+lONvJN0mXf5ab+DdJEuR61QdojoTz0v571T1plN3xOki3QJJr+ddOlPkATvlHVm0/ckXaQLlpxQFsqkS3+qkXeSLvMuP+13kC7S5agVyg4R/ann5bx3yjqz6XuCdJEuweS3C2X9SbpIgnfKOrPpe5Iu0gWhbBkTeD1vyelPv90+ctD7nnYHSJfjRig7bvx2i1N/+u1mkyT4nnYHSBcsOceN367n5ZL+9NtJgu/pe4J0wZIjXQ47PW9x6k+/3WySBN/T7gDpctwIZceN325x6k+/3WySBN/T7gDpgiXnuPHb9bxc0p9+u31EEnxPkC5YcqTLYafnLU796bebTZLge9odIF2OG6HsuPHbLU796bebTZLge/qeIF2w5Bw3fruel0v602+3j0iC72l3gHRZcqTLYafnLU796bebTZLge9odIF2kSyg7bvx2i1N/+u1mkyT4nr4nSBcsOceN367n5ZL+9NvtI5Lge9odIF2OG6HssNPzFqf+9NvNJknwPe0OkC5Yco4bv93i1J9+u9kkCb6n7wnSBUuOdDns9Lxc0p9+u31EEnxPuwOky3EjlB03frvFqT/9drNJEnxPuwOkC5ac48Zv1/Oky283myTB9/Q9QbpgyZEuh52etzj1p99uH5EE39PuAOly3Ahlx43fbnHqT7/dbJIE39PuAOmCJee48dv1vFzSn347SfA9fU+QLlhypMthp+ctTv3pt5tNkuB72h0gXY4boey48dstTv3pt5tNkuB72h0gXbDkHDd+u56XS/rTb7ePSILvCdIFS450Oez0vMWpP/12s0kSfE+7A6TLcSOUHTd+u8WpP/12s0kSfE/fE6QLlpzjxm/X83JJf/rt9hFJ8D3tDpAuS450Oez0vMWpP/12s0kSfE+7A6SLdAllx43fbnHqT7/dbJIE39P3BOmCBa9Glpzf7rf74wby0xwRJHME0mUhGSRHg6PBb/fb5af8NEeki3TJOtIFg6RGjga/3W+Xn/LTHPntpEvWkS4YJDgaHA1+O+mC/DRHpMscgXRZSAZJjRwNfrvfLj/lpzkiXaRL1pEuGCQ1sjj9dr9dfspPc+S3ky5ZR7pgkOBocDT47aQL8tMckS5zBNJlIRkkNXI0+O1+u/yUn+aIdJEuWUe6YJDUyOL02/120gVz5LeTLllHumCQ4GhwNPjtfrv8lJ/miHSZI5AuC8kgqZGjwW/32+Wn/DRHpIt0yTrSBYOkRhan3+63ky7IT3NEumQd6YJBgqPB0eC3++3yU36aI9JFukC6LCSDpEaOBr/db5ef8tMc+e2kS9aRLhgkNbI4/Xa/nXRBfpoj0mWO4IMaJDgaHA1+u98uP+WnOSJdpEvWkS4LySCpkaPBb/fb5af8NEd+O+mSdaQLBkmNLE6/3W8nXZCf5oh0mSOQLgvJIDkaHA1+u98uP+WnOSJdpEvWkS4YJDVyNPjtfrv8lJ/myG8nXbKOdMEgwdHgt/vtpAvy0xyRLnME0mUhGSQ1cjT47X67/JSf5oh0kS5ZR7pgkNTI4vTb/Xb5KT/Nkd9OumQd6YJBgqPB0eC3ky7IT3NEuswRSJeFZJDUyNHgt/vt8lN+miPSRbpkHemCQVIji9Nv99tJl/w0R3476ZJ1pAsGCY4GR4Pf7rfLT/lpjkiXOQLpspAMkho5Gvx2v11+yk9zRLpIl6wjXZg+nEJZ3dXIMnY0OOj1vF4ih/ITpAuOb4eIGpl3R4PZ9D39duLht9ubpAtC2UGv7pYH6TKb5kgv6SW/Xc+TLjjCYBmrkQPU0eBY1PN6iXTJT5AuOL4dIupOuhwNZtP39NuJh99ub5IuCGUHvbqrEekym+ZIL+klv13Pky44wmAZq5F5dzQ4FvW8XiJd8hOkC45vh4i6Wx6ky2zKOr+dePjt9ibpglB20Ku7GjlAHQ2ORdKll/x2PU+64AiDZaxG5t3RYDZ9T71EuuQnSBcc3w4Rdbc8SJfZNEd6iXj47fYm6YJQdtCruxo5QB0NjkU9r5dIl54nXXCEwTJWI/PuaDCbvqffTjz8dtcy6YLj2yGi7pYH6TKb5kgv6SW/Xc+TLghlB726q5ED1NHgWNTzeol0yU+QLkcYLGM1Mu+OBrPpe/rtxMNvtzdJFxzfDhF1tzxIl9k0R3pJL/ntep50gXQ56NVdjRygjgbHop7XS6RLfoJ0wfFtGauReXc0mE3f028nHn67vUm6IJQd9OpueZAus2mO9JJe8tv1POmCIwyWsRo5QB0NjkU9r5dIl/wE6YLj2yGi7qTL0WA2fU+/nXj47fYm6YJQdtCruxqRLrNpjvSSXvLb9TzpgiMMlrEamXdHg2NRz+sl0iU/Qbrg+HaIqLvlQbrMpu/ptxMPv93eJF0Qyg56dVcjB6ijwbFIuvSS367nSRccYbCM1ci8OxrMpu+pl0iX/ATpguPbIaLulgfpMpvmSC8RD7/d3iRdMEgWkhqBGDtuzLvvad6JnAwhXbCQfE8BCv3pCJPJdpx5N+9uBpAuC8lwClDoT5AuPU+6QLpkCOmChWTJqREcYY4w8+57mnfz7mYA6bKQfE8BCv3pCJPJdpx5N+9uBpAuR5jhFKDQnyBdep50gXTJENIFC8mSUyM4whxh5t33NO/m3c0A0mUhWfACFPrTESaT7Tjzbt7dDCBdsJAsOZ2vP0G69DzpAumSIaQLFpLvKUDhCHOEmXff07ybdzcDSJeFZDgFKPSnI0wm23Hm3by7GUC6YCFZcmoERxjp0vOkC6RLhpAuWEi+pwCF/nSEmXff07ybdzcDSJeFZDgFKPQnSJcdZ97Nu5sBpAsWkiWnRnCEOcLMO+kC6ZIhpAsWku8pQKE/HWEy2Y4z7+bdzQDSZSEZTgEK/QnSpedJl3l3M4B0wUKy5NQIjjBHmHn3Pc076ZIhpAsWku8pQKE/HWEy2Y4z7+bdzQDSZSEZTgEK/QnSpedJF0iXm4F0wUKy5NQIjjBHmHn3Pc27eXczQJEsJN9TgEJ/OsJksh1n3s27mwGkyxFmOAUo9CdIl54nXSBdMoR0wUKy5NQIjjBHmHn3Pc27eXczgHRZSBa8AIX+dITJZDvOvJt3NwNIFywk0gX9CdKl50kXSJcMIV2wkHxPAQpHmCPMvPue5t28uxlAuiwkwylAoT8dYTLZjjPv5t3NANIFi1MwOW58z/axqJccynpeL0F+ki6AdKmR7+l7+u2kS8+TLpgjkC44GgSTQ9n39Nv1kmORdMEcgXTB0SCYHA2+pwNULzmU9bxegvwkXQDpUiPf0/f02+WnTCZdMEcgXXA0CCaHsu/pt+slx6KeJ13mCKQLjgbB5GjwPR2gesmhrOdJF+Qn6QJIlxr5nr6n3y4/ZTLpgjkC6YKjQTA5lH1Pv10vORb1vF6C/CRdcDQIJkeD7+kA1UsOZT1PumCOQLpAutTI9/Q9/Xb5KZNJF8wRSBccDYLJoex7+u16ybGo5/US5CfpAgSTo8H3dIDqJYeyniddMEcgXXA0OOx8T9/Tb5efMpl0wRyBdMHRIJgcyr6n366XHIt6Xi9BfpIugHSpke/pANVLDmU9T7pgjkC64GgQTA5l39Nvl58ymXTBHIF0wdEgmBwNvqcDVC85FvW8XoL8JF0A6VIj39P39NsdynqedMEcgXTB0SCYHMq+p9+ulxyLpAvmCKQLjgbB5GjwPR2gesmhrOf1EuQn6QJIlxr5nr6n3y4/ZTLpgjkC6YKjQTA5lH1Pv10vORb1POkyRyBdcDQIJkeD7+kA1UsOZT1PuiA/SRdAutTI9/Q9/Xb5KZNJF8wRSBccDYLJoex7+u16ybGo5/US5CfpgqNBMDkafE8HqF5yKOt50gVzBNIF0qVGvqfv6bfLT5lMumCOQLrgELHkHDcWJ0HSn+Zdzvvt5kjOky7AMrY8LHjSJZfMu5yXITLZHIF0wXFjGTtqHUyWsXmX8+ouk82RnCddgGVseVjwlrH+NO9y3m83R3KedAFCxDImXaRLLpl3OS9DZLI5AumC48ZCsjxIl2Vs3uW8ustkcyTnSRdgGVseFjzp0p/mXc777eZIzpMuQIhYxo5aBxPpMu9yXobIZHME0gXHjYVkeVjwlrH+lPPqLpPNkZwnXYBlbHlY8KRLLpl3Oe+3myM5T7oAIWIZO2odTJaxeZfzpEsmmyOQLjhuLCTLw4K3jPWneZfzpMscyXnSBVjGlocFT7rkknmX8zKEdMl50gUIEcvYUetgsozNu5xXd5lsjkC64LixkCwPC94y1p/mXc777eZIzpMuwDK2PCx40iWXzLuclyEy2RyBdEGIWMaOWgeTZWze5by6y2RzJOdJFxw3FpLlYcFbxvrTvMt5v90cyXnSBVjGlocFT7rkknmX8zJEJpsjkC6QLsvYUetgsozNu5xXd5lsjuQ86QIsY8vDgreM9ad5l/N+uzmS86QLECKWMekiXXLJvMt5GSKTzRFIFxw3FpLlQbosY/Mu59VdJpsjOU+6AMvY8rDgSZf+NO9y3m83R3KedAFCxDJ21DqYSJd5l/MyRCabI5AuOG4sJMvDgreMSZecV3eZbI7kPOkCLGPLw4InXXLJvMt5v90cyXnSBQgRy9hR62CyjM27nCddMtkcgXRZxhCglrHjRt0dDWZTzpsjmazupMtwwvIQ9HpJ3c27faTu5oh0kS7SBUvOMhb0et7idCzaR2ZTjcwR6QLpEqCwjB3fpEvdHQ1mU877nnYx6SJdhhOWh6DXS+pu3u0jdTdH5sjugA9qyVnGgl7PW5yORfvIbKqROZLJ6k66LDlYxo5v0qXujgazKed9T7uYdJEukC7LQ9DrJXU37/aRupsjc2R3gHQJUNIl6PW8xelYtI/MphqZI5ms7qTLcMIydnyTLnV3NJhNOe972sWki3TBkrOMBb1eUnfzbh+puzkyR3YHSJcAhWXs+CZdjkX7yGyqkTmSyepOugwnLA9Br5fU3dFgNuW872kXky7SBUvOMhb0et7idCzaR+pujsyR3QHSJUBhGTu+SZe6OxbNphqZI5ms7qTLcMLyEPR6Sd3Nu30k531Pu5h0kS5YcpaxoNfzFqdj0T4ym+bIHNkdIF0CFJax45t0qbujwWzKeXMkk9WddBlOWB6CXi+pu3m3j9TdHJEu0kW6YMlZxoJez1ucjkX7yGyqkTkiXSBdAhSWseObdKm7o8Fsynnf0y4mXaTLcMLyEPR6Sd3Nu32k7ubIHNkdHMEnsOQsY0Gv5y1Ox6J9ZDbVyBzJZHUnXZYcLGPHN+lSd0eD2ZTzvqddTLpIF0iX5SHo9ZK6m3f7SN3NkTmyO0C6BCjpEvR63uJ0LNpHZlONzJFMVnfSZThhGTu+SZe6OxrMppz3Pe1i0kW6YMlZxoJeL6m7ebeP1N0cmSO7A6TLcMLidIgQOblkd8g6vSTrvBOkS9gZJHV3iJAuC16GkC79qUbmSM+TLhgkWHK+p0NELjkWZZ38lHUyGaTL4oQlR7pIl1yyO2SdXpJ13gnSJewMkro7REiXBQ/SpT/VyBzpedIFgwRLzvd0iMglu0PWyU9ZJ5NBuixOWHKki3TJJRlCuvSnrPNOkC5hZ5DU3SFCuix4OBZlnfwkXXqedMEgwZLzPR0icsnukHV6SdbJZJAuixOWHOkiXXJJhpAu/alG5kgmky5hZ5DU3SFCuix4OBZlnfyUdTKZdMEgwZLzPR0icsnukHV6SdZ5J0iXxQlLjnSRLrkkQ0iX/lQjc6TnSRcMkro7REiXBQ/HoqyTn7JOJoN0WZyw5HxPh4hcsjtknV6Sdd4J0iXsDJIlR7pIl1ySIaRLf6qROdLzpAsGCQ4R0mXBw7Eo6+SnrJPJIF0WJyw50uUQkUt2h6zTS7LOO0G6hJ1BUneHCOmSSzKEdOlPNTJHep50wSDBkvM9HSJyybEo6+SnrJPJIF0WJyw50kW65JLdIev0kqzzTpAuYWeQ1N0hQroseJAu/alG5kjPky4YJFhyvqdDRC7ZHbJOfso6mQzSZXHCkiNdpEsuyRDSRbpknXeCdAk7g6TuDhHSZcHDsSjr5Kc50vOkCwYJlpzv6RCRS3aHrNNLsk4mg3RZnLDkSBfpkksyhHTpTzUyRzKZdAk7g6TuDhHSZcHDsSjr5Kesk8mkCwZJ0Osl73TUqpH89OeFnDebMhmkS4AKJt/TMvZO0mXeoe5m02ySLtIFwSSYLGPvNEfyk3TJebmkRnoepEuACia95J2kS43kJ+mS82ZTJoN0kS7BZBlbxt5Jusw71N1smk3SRbogmASTZeyd5kh+ki45L5fUSM+DdAlQweR7khnSpUbyk3TJebMpk0G6SJdgEkyWsXeSLvMOdTebZpN0kS4IJsGkl7yTdMlP0iXn5ZIa6XmQLgEqmHxPy9g7SZf8JF1y3mzKZJAu0iWYBJNl7J3mSH6SLnU3m2aTdJEuCCbBpJe8k3SpkfwkXXJJjfQ8SJcAFUy+p2XsnaTLvEPOm02ZDNJFugSTYLKMvdMcyU/SJeflp9kkXaQLgkkw6SXvJF1qJD9Jl5w3m3oepEuACibf0zL2TtJl3qHuZtNsuudJF+kSTILJMvZOcyQ/SZecl0tqpOdJFwSTYNJL3km61Eh+ki45bzZlMkiXABVMvqdl7J2ky7xD3c2m2SRdpMsHFUyCyTL2TnMkP0mXnJdLaqTnQboEqGDSS95JutRIfpIuOW82ZTJIF+kSTJaxZeydpMu8Q93NptkkXaQLgkkwWcbeaY7kJ+mS83JJjfQ8SJcAFUy+J5khXWokP0mXnDebMhmki3QJJsFkGXsn6TLvUHezaTZJF+mCYBJMesk7SZf8JF1yXi6pkZ4H6RKggsn3tIy9k3TJT9Il582mTAbpIl2CSTBZxt5pjuQn6VJ3s2k2SRfpggD1Tu90hKm7g0mNCCeIB0C6LHjv9E7Hjbo76NVIjSDnAdJFuix47yRdpMs7ZbIaySWQLpAuWPDe6Z2Wsbo76NWIdIF0AaTLgvdO73TcqLuDXo3UCCBdIF2ky4L3TtJFurxTJquRXALpAumCBe+d3mkZq7uDXo1IF+Q8QLoseO/0TseNujvo1UiNANIF0kW6LHjvJF2kyztlshrJJZAugHRZ8N7pnZaxujvo1Yh0Qc4DpIt0WfDe6bhRdwe9GqkRQLpAumDBeyfpIl3eKZPVSC6BdAGky4L3Tu8kXeruoFcj0gU5D5Au0mXBeyfpIl0OejVSI4B0gXTBgvdO77SM9adMViO5BNIFkC4L3ju903Gj7g56NSJdkPMA6SJdFrx3ki7S5Z0yWY0A0gXSBQveO73TMlZ3B70akS6QLoB0WfDe6Z2OG3V30KuRGkHOA6SLdFnw3km6SJd3ymQ1kksgXSBdsOC90zstY3V30KsR6QLpAkiXBe+d3um4UXcHvRqpEUC6QLpIlwXvnaSLdHmnTFYjuQTSBdIFC947vdMyVncHvRqRLsh5gHRZ8N7pnY4bdXfQq5EaAaQLpIt0WfDeSbpIl3fKZDWSSyBdAOmy4L3TOy1jdXfQqxHpgpwHSBfpcix6p+NG3R30aqRGAOkC6QLguLGMoT/90UAO5ZI/RLwTpAsA6YL+1PMOO7/d9/RO/Um6ADhqSZf+hMOOJJh3Pa8/SRcAS84BCv1JukiXXCIz3gnSBcBRa3noTz3vsPPbfU/v1J+kC4CjlnSBdDnsSIJ51/P6k3QBsOQcoNCfep50ySUy450gXQActZaH/oTDjnT5nt6pP0kXAEct6YL+JF2ki3Tpef1JugBYcg5Q6E8977Dz20mXd4J0AXDUWh76Ew47kmDeSZf+JF0AHLWkC/qTdJEuuURmzCbpAmDJOUChP/W8w85v9z29U3+SLgCOWstDf8JhRxLMu57Xn6QLgKOWdEF/ki7SJZfIjHeCdAGWnAMU+lPPO+z8dt/TO/Un6QLgqLU89CccdiTBvOt5/Um6ADhqSRf0J+kiXXKJzHgnSBcAByj0p5532Pntvqd36k/SBcBRS7r0Jxx2JMG863n9SboAWHIOUOhP0kW65BKZ8U6QLgCOWstDf+p5h53f7nt6p/4kXQActaQLpMthRxLMu57Xn6QLgCXnAIX+JF2kSy6RGe8E6QLgqLU89Cccdn677+md+pN0AXDUki7oT9JFukiXntefpAuAJecAhf7U8w47v510eSdIFwBHreWhP+GwIwnmnXTpT9IlRABhZzanLWOHiDmCnvdONwNIl4UEyxgWp99Ouuw4Pe+d8hOky0ICBKjZdDQ47MyRnCcz8lMukS5YSBCgZtMR5rebTTtOz3unmwGky0KCZQyL028nXeaIdHmn/ATpspAAAWo2HQ0OO3MEMiM/5RLpgoUEAWo2HWF+u9m04/S8d7oZQLosJFjGsDj9dtJljuQ8mZGfbgbSZSEBAtRsOhocduYIet473QykCxYSBKjZdIT57WbTjtPz3ik/QbosJFjGsDj9dtJljuQ8mZGfcol0+aCAADWbjgaHnTmCnvdONwNIl4UEAWo2HWF+u9m04/S8d8pPkC4LCZYxLE6/nXSZIzlPZuSnXCJdsJAgQM2mo8FhZ46g573TzQDSZSHBMjabjjC/3WzacXreO+UnSJeFBAhQ0uW3ky5zJOfJjPyUS6QLFhIEqNkkXQ47cwQ9751uBpAuCwmWMSxOv91s2nF63jvlJ0iXhQQIULPpaHDYmSM5T2bkp1wiXbCQIEDNpiPMbzebdpye9043A0iXhQTLGBan3066zBHp8k75CdJlIQEC1Gw6Ghx25ghkRn7KJdIFCwkC1Gw6wvx2s2nH6XnvdDOAdFlIsIxhcfrtpMscyXkyIz9tedJlIQEC1Gw6Ghx25gh63jvdDKQLFhIEqNl0hPntZtOO0/PeKT9BuiwkWMawOP120mWO5DyZkZ9yiXQ57AySulty6q7uDnrf02+Xn+ZdzoN0kS44avWnujuUHWF+O+kiXXpef5IuIaLp1V1/qrt3OsKIh98uP827/U66oOnh+FZ3dXeE+Z5+u/w073IepMsRBnXXn+ruUHaE+e2ki3Tpef1JuoSIpld3oazu3ukIIx5+u/w07/Y76YKmh6NWf6q7I8z39Nvlp3mX8yBdjjCou/5Ud9LlCPPbSRfp0vP6k3QJEU2v7kJZ3dXdEUY8/Hb5ad7td9IFTQ9Hrf5Ud4eyI8xvl5/mXc6DdDnCoO76U9290xFGPEgX6dLz+pN0CRFNr+5CWd3V3RHme/rt8tO82++kC5oejlr9qe4OZUeY3066SJecB+lyhEHd9ae6e6cjjHj47fLTvOtP0iVENL26C2V1V3dHmO/pt8tP8y7nSRc0PRy1+lPdHcqOML+ddJEuPa8/SZcjDOquP9XdOx1hxMNvl5/m3X4nXY5vTa/uQlnd1d0R5nv67fLTvMt5kC7SBUet/lR3h7IjzG8nXaRLz+tP0iVENL266091905HGPHw2+WnebffSRc0PYSyuqu7I8z39Nvlp3mX8yBdjjCou/5Ud4eyI8xvJ12kS8/rT9IlRDS9ugtldfdORxjx8Nvlp3m330kXND0ctfpT3R1hvqffLj/Nu5wH6XKEQd31p7qTLkeY3066SJee15+kS4hoenUXyuqu7o4w4uG3y0/zbr+TLmh6OGr1p7o7lB1hfrv8NO9yHqTLEQZ115/q7p2OMOJBukiXntefpEuIWEjCTt3VSI0cDbDfQYxBuuCwE6DqrkZqpEaAvUm6ANJFuiwPx6KDXo3UyMEE0gXSBdIllB12jkV1VyM1Il2w3+FmAOmCw06AqrsaqZEaAfYmZAhIF+myPByLDno1UiMHE0gXSBdIl1B22DkW1V2N1Ih0wX6HmwEgXaRLgKq7GqmRGgH2JmQISJdQJl2ORQe9GqmRgwmkC6QLpAsOO9Kl7mqkRqQL9jvcDADpIl2Wh2NRjdRIjQB7EzIEpEsoO+wci+quRmrkYALpAukC6YLDToCquxqpEemC/Q43A0C6SJfl4Vh00KuRGgH2JmQISJdQdtg5FtVdjdSIdIF0gXSBdMFhJ0DVXY3USI1gv8PNAJAu0mV5OBYd9GqkRg4m2JuQISBdQtlh51hUdzVSI9IF+x2kC6QLDjsBqu5qpEZqBNibpAsgXaTL8nAsOujVSI0cTCBdIF0gXULZYedYVHc1UiPSBfsdbgaQLjjsBKi6q5EaqRFgb0KGgHSRLsvDseigVyM1cjCBdIF0gXQJZYedY1Hd1UiNSBfsd7gZANJFugSouquRGqkRYG9ChoB0CWXS5Vh00KuRGjmYQLpAukC64LAjXequRmpEumC/w80AkC7SZXk46NVIjdQIsDchQ0C6hLLDzrHonTLEbMp5mHdz5GaQyaQLjm+HnboLZdLlWDRH0EvEw28H6RKgDjsyY8HLENJljqCXZJ0bTC6RLgFq4AWod8Jski6Yd3PkZpDJpAuOb4edugtlh4gFb46gl4iH3w7SJUAddmTGgpchZlPOQy/JOjeYXCJdAtTAC1DvhNl0LJojmCM3g0wmXXB8O+zUXSg7RCx4cwS9RLr8dpAuAeqwIzMWvAwxm3Ie5t0ckS65RLoEqIEXoN4Js+lYNEfQS8SDdJEuOL4dduoulB0iFrw5gl6SdW4wuUS6BKjDjsxY8DLEbMp5mHdz5GaQyaRLgBp4AeqdMJuORXMEvUQ8/HaQLtLlsFN3oewQseDNEfSSrHODySXSJUBJF5mx4GWI2ZTzMO/myM0gk0kXHN+kyzthNh2L5gh6iXj47SBdAtRhR7qEskPEgjdH0Euyzg0ml0iXADXwApR0yRCzKedh3s2Rm0Emky44vh126i6UzaZj0RxBLxEPvx2kS4A67MiMBS9DSJc5gl6SdW4wuUS6BKiBF6DeCbNJumDezZGbQSaTLji+HXbqLpQdIha8OYJeIh5+O0iXAHXYkRkLXoaYTTkPvSTr3GByiXQJUAMvQL0TZtOxaI7MuzlyM8hk0gXHt8NO3YWyQ8SCN0fQS8TDbwfpEqAOOzJjwcsQsynnYd7NEemSS6RLgBp4AeqdMJuORXMEvUQ8SBfpguPbYafuQtkhYsGbI+glWecGk0ukS4A67MiMoHc0QC7JJfmp5+04kC7SJZgEvbqTLkAueSfUiHSBdFkegl7dLSRzBLnkneZdz9txIF2ky/JwNFhIpAtySS7JTz1vx4F0wfIQ9OpOugC55J1QI9IF0kW6LA9Hg4VkjiCXvNO863k7DqSLdAkmQW8hkS7IJbkkP/W8HQfSBctD0Ks76QLkkndCjUgXSBfpsjwcDRYS6YJc8k7zruftOJAu0iWYBL26ky44QOWS/NTzdhxIFywPQa/uFpI5glzyTqgR6QLpIl2Wh6PBQiJdkEuky7zreTsOpIt0CSZBr+6kC5BL8lPP23EgXbA8BL26W0jmCHLJO827GpEukC7SZXk4Giwk0gW5JJfkp56340C6SJdgEvTqTroAueSdUCO3N+mC5SHo1d1CMkeQS95p3vW8HQfSRbosD0eDhUS6IJfkkvzU83YcSBfpEkyCXt1JFyCXvBNqRLpAuiwPQa/uFpI5glzyTvOu5+04kC7SZXk4Giwk0gW5JJfkp56340C6YHkIenUnXYBc8k6oEekC6SJdloejwUIyR5BL3mne9bwdB9JFugSToLeQSBfkklySn3rejgPpguUh6NWddAFyyTuhRqQLpIt0WR6OBguJdEEuead51/N2HEgX6RJMgl7dSRfkklySn3rejgPpguUh6NXdQjJHkEveCTUiXSBdpAvq7nsSOUeYGqk7zJGeB+kSIoZT3dXd93SIqBHsODmv50G64FiEuvueDhGHiBqpO8yRngfpcixC3X1PB71DRI3UHaRLz4N0CRHDqe7q7ns6RNQIsg7mSPVJFxyLUHff0yHiEFEjdYc50vMgXY5FqLvv6aB3iKiRukPO63mQLiFiONVd3X1Ph4gaQdbBHOl5kC7HItTd93SIOETUSN1hjvQ8SJdjEeruezroHSJqpO6Q83oepAuORXVXd9/TIaJGkHUwR3oepMuxCHX3PR0iDhE1UneYIz0P0iVEDKe6ky4HvUNEjdQdcl7Pg3TBsQh19z0dImoEWQdzpOdBuhyLUHff00HvEFEjdYc50vMgXULEcKq7uvueDhE1UnfIeT0P0gXHItTd93SIOERokqyDOdLzIF2ORai77+mgd4iokbrDHOl5kC4hYjjVXd19T4eIGsGOk/N6HqQLjkWou+/pEHGIqJG6wxzpeZAuxyLU3fd00DtE1EjdQbr0PEiXEDGc6q7uvqdDRI0g6yDrQLrgWIS6+54OEYeIGqk7zJGeB+lyLELdfU8HvUNEjdQdcl7Pg3QJEcOp7uruezpE1AiyDuZIz4N0ORah7r6nQ8QhokbqDnOk50G6HItQd9/TQe8QUSN1h5zX8yBdcHyru7r7ng4RNYKsgznS8yBdQgTlUPY9ZYieR6FGekkveSdIF+kCHA2kS430vBo5lPWSXiJdpAtCGRaS7ylD9DwcoHpJL5EukC4HEywk/Um61Mj3VCO9pJdIF0gX6QIcDaRLjfS8GjmUoZdIF+mCUIaF5HvKED0PB6he0kveCdLlYIKFpD9Jlxr5nmqkl/SSXiJdpIt0AY4G0qVGel6NHMrQS6QLpMvBBAvJ95Qheh4OUL2kl7wTpIt0wULSn6RLjXxPNdJLekkvkS7SBaEMRwPpUiM9r0YOZegl0gXS5WCCheR7yhA9DweoXtJL3gnSRboARwPpUiPfU430kl7SS6SLdEEow0LyPWWInlcjhzL0EukC6XIwwULSn6RLz8MBqpf0kneCdJEuwNFAutRIz6uRXtJLeol0kS4IZVhIvqcM0fNyyaEMvUS6QLocTLCQ9CfpUiPf06Gsl/SSd4J0kS7A0UC61EjPq5FDWS/pJdJFuiCUYSH5njJEz8MBqpf0EukC6XIwwULSn6RLjXxPNdJLeol0gXSRLsDRQLrUSM+rkUMZeol0kS4IZVhIvqcM0fNwgOolveSdIF0OJlhI+pN0qZHvqUZ6SS/pJdJFukgX4GggXWqk59XIoQy9RLpAuhxMsJB8Txmi5+EA1Ut6yTtBukgXLCT9SbrUyPdUI72kl/QS6SJdEMpwNJAuNdLzauRQhl4iXSBdAAAAAEC6AAAAAIB0AQAAAABIFwAAAACQLgAAAAAgXQAAAAAA0gUAAAAApAsAAAAASBcAAAAAgHQBAAAAAOkCAAAAANIFAAAAACBdAAAAAEC6AAAAAACkCwAAAABIFwAAAACQLgAAAAAA6QIAAAAA0gUAAAAApAsAAAAAQLoAAAAAgHQBAAAAAOkCAAAAAJAuAAAAACBdAAAAAEC6AAAAAACkCwAAAABIFwAAAACQLgAAAAAA6QIAAAAA0gUAAAAAIF0AAAAAQLoAAAAAgHQBAAAAAEgXAAAAAJAuAAAAACBdAAAAAADSBQAAAACkCwAAAABIFwAAAACAdAEAAAAA6QIAAAAA0gUAAAAAIF0AAAAAQLoAAAAAgHQBAAAAAEgXAAAAAJAuAAAAAADpAgAAAADSBQAAAACkCwAAAABAugAAAACAdAEAAAAA6QIAAAAAkC4AAAAAIF0AAAAAQLoAAAAAAKQLAAAAAEgXAAAAAJAuAAAAAADpAgAAAADSBQAAAACkCwAAAABAugAAAACAdAEAAAAASBcAAAAAkC4AAAAAIF0AAAAAANIFAAAAAKQLAAAAAEgXAAAAAIB0AQAAAADpAgAAAADSBQAAAAAgXQAAAABAugAAAACAdAEAAAAASBcAAAAAkC4AAAAAIF0AAAAAANIFAAAAAKQLAAAAAEC6AAAAAIB0AQAAAADpAgAAAACQLgAAAAAgXQAAAABAugAAAAAApAsAAAAASBcAAAAAkC4AAAAAAOkCAAAAANIFAAAAAKQLAAAAAEC6AAAAAIB0AQAAAADpAgAAAACQLgAAAAAgXQAAAAAA0gUAAAAApAsAAAAASBcAAAAAgHQBAAAAAOkCAAAAANIFAAAAACBdAAAAAEC6AAAAAIB0AQAAAABIFwAAAACQLgAAAAAgXQAAAAAA0gUAAAAAP+UBmtAmtd3U89UAAAAASUVORK5CYII="}};</script>
+<script>
+(function(){
+const D = window.DECK;
+const fa = s => String(s).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const money = n => fa(Number(n).toLocaleString('en-US')).replace(/,/g,'٬');
+const G = 'url(#gg)';
+const F = "font-family:var(--font)";
+const sv = id => id==='webapp' ? 'وب‌اپ و سامانهٔ اختصاصی' : D.services.find(s=>s.id===id).name;
+
+/* ======= small svg helpers (art box is 840x700) ======= */
+const T = (x,y,s,size=24,fill='#f7e9b9',anchor='middle',w=700) => `<text x="${x}" y="${y}" text-anchor="${anchor}" font-size="${size}" font-weight="${w}" fill="${fill}" style="${F}">${s}</text>`;
+const R = (x,y,w,h,r=10,fill='rgba(217,180,95,.1)',stroke=G,sw=2) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+const bar = (x,y,w,h=10,o=.6) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h/2}" fill="${G}" opacity="${o}"/>`;
+const rise = (x,y,w,h,d,fill='rgba(217,180,95,.14)') => `<rect class="svgb" x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${fill}" stroke="${G}" stroke-width="1.6" style="animation:rise 6s ${d}s ease-in-out infinite;opacity:0"/>`;
+const spark = (x,y,s,d) => `<g transform="translate(${x},${y}) scale(${s})"><path class="tw svgb" style="animation-delay:${d}s" d="M0-14C1-5 5-1 14 0 5 1 1 5 0 14-1 5-5 1-14 0-5-1-1-5 0-14z" fill="#f7e9b9"/></g>`;
+const chip = (x,y,w,t,d=0,col=G) => `<g class="fl" style="animation-delay:${d}s"><rect x="${x}" y="${y}" width="${w}" height="50" rx="25" fill="rgba(5,22,31,.94)" stroke="${col}" stroke-width="1.8"/>${T(x+w/2,y+33,t,22)}</g>`;
+const mk = (n,x,y,bad) => `<i class="mk${bad?' bad':''}" data-n="${n}" style="left:${x}px;top:${y}px">${fa(n)}</i>`;
+const svg = inner => `<svg viewBox="0 0 840 700">${inner}</svg>`;
+
+/* ======= ART per scene ======= */
+const ART = {};
+ART.street = () => svg(`
+  <polygon points="420,0 120,560 720,560" fill="url(#spot)" opacity=".5"/>
+  <polygon points="90,170 420,60 750,170" fill="rgba(217,180,95,.08)" stroke="${G}" stroke-width="4" stroke-linejoin="round"/>
+  <rect x="120" y="170" width="600" height="440" rx="8" fill="rgba(11,51,64,.6)" stroke="${G}" stroke-width="4"/>
+  ${[160,260,360,460,560].map(x=>`<rect x="${x}" y="190" width="14" height="420" fill="rgba(217,180,95,.18)"/>`).join('')}
+  ${R(230,205,380,70,14,'rgba(5,22,31,.95)')}${T(420,252,'اتاق تعاون استان تهران',32)}
+  ${[0,1,2].flatMap(j=>[0,1,2,3].map(i=>`<rect class="tw" x="${170+i*140}" y="${300+j*90}" width="90" height="56" rx="8" fill="#f7e9b9" style="animation-delay:${((i*5+j*3)%7)*.4}s;animation-duration:${3+(i+j)%3}s"/>`)).join('')}
+  <path d="M360 610 V500 Q420 450 480 500 V610Z" fill="rgba(247,233,185,.18)" stroke="${G}" stroke-width="4"/>
+  <ellipse cx="420" cy="612" rx="160" ry="16" fill="url(#glow)" class="pu svgb"/>
+  <path d="M20 612H820" stroke="${G}" stroke-width="3"/>
+  <g class="fl"><rect x="560" y="20" width="250" height="150" rx="14" fill="rgba(5,22,31,.95)" stroke="${G}" stroke-width="3"/><path d="M560 56H810" stroke="${G}" stroke-width="2"/><circle cx="580" cy="38" r="5" fill="#f7e9b9"/><circle cx="598" cy="38" r="5" fill="#d9b45f"/>${T(685,100,'tpcc.ir',34)}${bar(600,124,170)}${bar(600,142,110)}</g>
+  ${spark(60,100,1.2,.2)}${spark(790,260,1,1)}`);
+ART.site = () => svg(`
+  ${R(30,20,780,640,18,'rgba(5,22,31,.96)',G,4)}
+  ${R(50,36,740,38,19,'rgba(217,180,95,.08)')}${T(420,62,'tpcc.ir',22,'#f7e9b9','middle',500)}
+  ${R(50,88,740,34,8,'rgba(217,180,95,.1)')}${bar(70,100,120)}${[0,1].map(i=>`<circle cx="${720+i*36}" cy="105" r="11" fill="none" stroke="#e8a54b" stroke-width="3"/>`).join('')}
+  ${[0,1,2,3,4,5,6,7].map(i=>`<rect x="${75+i*88}" y="138" width="64" height="12" rx="6" fill="${G}" opacity=".55"/>`).join('')}
+  ${rise(50,168,740,120,0,'rgba(217,180,95,.2)')}${bar(540,200,220,16,.9)}${bar(600,232,160,10)}${bar(650,252,110,10)}
+  ${[0,1,2].flatMap(j=>[0,1,2].map(i=>rise(60+i*242,306+j*0,216,94,.5+i*.25+j*.1))).join('').slice(0,0)}
+  ${[0,1,2].map(i=>rise(50+i*252,306,236,96,.5+i*.3)).join('')}${[0,1,2].map(i=>rise(50+i*252,412,236,96,1.2+i*.3)).join('')}
+  ${[0,1,2].map(i=>rise(50+i*252,530,236,100,2.1+i*.3,'rgba(15,70,86,.5)')).join('')}
+  <g style="animation:cursor 7s ease-in-out infinite"><path d="M760 560l-6 36 10-8 8 18 8-4-8-18 14-2z" fill="#f7e9b9" stroke="#061b26" stroke-width="2"/></g>
+  ${mk(1,740,105,true)}${mk(2,420,144,true)}${mk(3,420,356)}${mk(4,420,580)}`);
+ART.contact = () => svg(`
+  <rect x="40" y="440" width="760" height="40" rx="12" fill="rgba(217,180,95,.12)" stroke="${G}" stroke-width="3"/><rect x="80" y="480" width="14" height="150" fill="${G}" opacity=".5"/><rect x="706" y="480" width="14" height="150" fill="${G}" opacity=".5"/>
+  <g class="fl"><path d="M120 420q0-60 60-60h40q40 0 40 40v20z" fill="rgba(5,22,31,.95)" stroke="${G}" stroke-width="4" stroke-linejoin="round"/><rect x="140" y="372" width="76" height="14" rx="7" fill="${G}" opacity=".7"/></g>
+  ${R(40,40,330,300,18,'rgba(5,22,31,.96)',G,3)}${T(205,84,'فرم تماس',26)}
+  ${['نام','ایمیل','تلفن','شهر','پیام'].map((l,i)=>`${T(345,128+i*40,l,16,'#93aab3','end',500)}<rect x="70" y="${110+i*40}" width="200" height="26" rx="8" fill="rgba(217,180,95,.1)" stroke="${G}" stroke-width="1.4"/><rect class="ty" x="76" y="${116+i*40}" width="${110+(i*37)%70}" height="14" rx="7" fill="${G}" opacity=".7" style="animation-delay:${i*.4}s"/>`).join('')}
+  ${R(450,60,360,100,22,'rgba(5,22,31,.96)')}${T(630,120,'سلام، کارت بازرگانی چطوره؟',22,'#d4dfe3')}
+  <g style="animation:rise 6s 1.2s ease-in-out infinite;opacity:0">${R(430,190,380,130,22,'rgba(15,70,86,.6)')}${T(620,240,'سلام! مدارک لازم این‌هاست',22)}${T(620,278,'و تا ۳ روز نتیجه می‌گیرید.',22,'#d4dfe3')}</g>
+  ${chip(500,350,150,'دستیار ۲۴ ساعته',.4)}${chip(660,350,130,'کد پیگیری',1.2)}
+  ${mk(1,168,372)}${mk(2,205,60)}${mk(3,630,250)}${spark(790,30,1,.2)}`);
+ART.news = () => svg(`
+  ${R(40,40,330,400,18,'rgba(5,22,31,.96)',G,3)}${R(60,60,290,160,12,'rgba(15,70,86,.55)')}<polygon points="140,190 200,110 250,170 280,140 330,200" fill="${G}" opacity=".5"/>${bar(60,246,260,14,.9)}${bar(60,272,200,10)}${bar(60,292,230,10)}${bar(60,312,150,10)}${T(205,400,'news.tpcc.ir',22,'#d9b45f','middle',500)}
+  ${['M370 180 C470 160 500 100 560 100','M370 240 C460 240 500 240 560 240','M370 300 C470 330 500 380 560 380'].map((p,i)=>`<path d="${p}" stroke="${G}" stroke-width="2.5" fill="none" opacity=".4"/><path class="fw" pathLength="100" d="${p}" stroke="#f7e9b9" stroke-width="5" fill="none" stroke-linecap="round" style="animation-delay:${i*.6}s"/>`).join('')}
+  ${R(560,50,240,100,16,'rgba(5,22,31,.96)')}${T(680,110,'کارت اینستاگرام',24)}
+  ${R(560,190,240,100,16,'rgba(5,22,31,.96)')}${T(680,250,'تلگرام و بله',24)}
+  ${R(560,330,240,100,16,'rgba(5,22,31,.96)','#e8a54b')}${T(680,380,'صفحهٔ اول سایت',24)}${T(680,412,'خبر قدیمی (تیر ۱۴۰۵)',17,'#e8a54b','middle',500)}
+  ${R(40,480,760,190,18,'rgba(5,22,31,.96)',G,3)}${T(420,520,'تقویم محتوایی ماه',22,'#d9b45f')}
+  ${Array.from({length:21}).map((_,i)=>`<rect class="svgb" x="${70+(i%7)*104}" y="${545+Math.floor(i/7)*40}" width="86" height="28" rx="8" fill="${i%3===0?'rgba(217,180,95,.4)':'rgba(217,180,95,.08)'}" stroke="${G}" stroke-width="1"/>`).join('')}
+  ${mk(1,205,300)}${mk(2,792,336,true)}${mk(3,470,330)}`);
+ART.services = () => svg(`
+  ${['مشاوره','بیمه و مالیات','ثبت و تأسیس','کارت بازرگانی','نمایشگاه','آموزش'].map((n,i)=>{const x=60+(i%3)*250,y=40+Math.floor(i/3)*210;return `<g class="svgb pu" style="animation-delay:${i*.35}s">${R(x,y,230,180,22,'rgba(5,22,31,.96)',i===4?'#e8a54b':G,3)}<circle cx="${x+115}" cy="${y+70}" r="34" fill="none" stroke="${G}" stroke-width="3"/><path d="M${x+98} ${y+70}l12 12 24-26" fill="none" stroke="${G}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>${T(x+115,y+150,n,26)}</g>`}).join('')}
+  <path d="M110 560H730" stroke="${G}" stroke-width="3" opacity=".4"/><path class="dr" pathLength="100" d="M110 560H730" stroke="#f7e9b9" stroke-width="5" fill="none"/>
+  ${[['درخواست',730],['بررسی',560],['پیگیری',390],['نتیجه',220],].map(([t,x],i)=>`<circle cx="${x}" cy="560" r="22" fill="#061b26" stroke="${G}" stroke-width="4"/><text x="${x}" y="568" text-anchor="middle" font-size="20" font-weight="800" fill="#f7e9b9" style="${F}">${fa(i+1)}</text>${T(x,622,t,22,'#d4dfe3')}`).join('')}
+  ${mk(1,420,130)}${mk(2,600,235,true)}${mk(3,420,520)}`);
+ART.arbitration = () => svg(`
+  <g class="fl"><path d="M420 40v120M300 160h240" stroke="${G}" stroke-width="6" stroke-linecap="round"/><path d="M300 160l-50 90h100zM540 160l-50 90h100z" fill="rgba(217,180,95,.18)" stroke="${G}" stroke-width="4" stroke-linejoin="round"/></g>
+  ${['ثبت','ارجاع','جلسه','رأی'].map((n,i)=>`${R(30+i*200,290,180,300,16,'rgba(5,22,31,.96)',G,3)}${T(120+i*200,332,n,26,'#d9b45f')}`).join('')}
+  ${[0,1,2].map(i=>`<g class="svgb" style="animation:slideR ${5+i}s ${i*1.1}s ease-in-out infinite alternate"><rect x="${640-i*10}" y="${360+i*70}" width="150" height="54" rx="12" fill="rgba(217,180,95,.2)" stroke="${G}" stroke-width="2"/>${bar(660-i*10,376+i*70,100,10,.8)}${bar(660-i*10,394+i*70,60,8)}</g>`).join('')}
+  ${R(30,620,760,56,14,'rgba(15,70,86,.5)')}${[0,1,2,3,4].map(i=>`<rect class="svgb" x="${60+i*140}" y="${660-[20,34,24,40,30][i]}" width="60" height="${[20,34,24,40,30][i]}" rx="6" fill="${G}" opacity=".7" style="transform-origin:bottom;transform-box:fill-box;animation:grow 4s ${i*.2}s ease infinite alternate"/>`).join('')}
+  ${mk(1,420,100)}${mk(2,420,440)}${mk(3,420,640)}${spark(90,80,1.2,.3)}`);
+ART.training = () => svg(`
+  ${R(40,40,520,330,20,'rgba(5,22,31,.96)',G,4)}<circle cx="300" cy="190" r="64" fill="none" stroke="${G}" stroke-width="5"/><polygon class="pu svgb" points="280,160 280,220 334,190" fill="${G}"/>${R(70,320,460,16,8,'rgba(217,180,95,.15)')}<rect class="ty" x="70" y="320" width="300" height="16" rx="8" fill="${G}" style="transform-origin:left"/>
+  ${Array.from({length:12}).map((_,i)=>`<circle class="tw" cx="${80+(i%6)*100}" cy="${430+Math.floor(i/6)*60}" r="20" fill="rgba(217,180,95,.35)" style="animation-delay:${i*.25}s"/>`).join('')}
+  ${R(590,200,220,290,16,'rgba(5,22,31,.96)',G,3)}${T(700,250,'گواهی',26)}${bar(620,274,160,10)}${bar(630,296,140,10)}<g transform="translate(650,330)">${[0,1,2,3,4].flatMap(r=>[0,1,2,3,4].map(c=>(r*c+r+c)%3?`<rect x="${c*16}" y="${r*16}" width="14" height="14" fill="${G}"/>`:'')).join('')}</g><circle cx="770" cy="470" r="22" fill="rgba(217,180,95,.25)" stroke="${G}" stroke-width="3"/>
+  <g class="fl"><rect x="620" y="60" width="60" height="110" rx="30" fill="rgba(5,22,31,.95)" stroke="${G}" stroke-width="4"/><path d="M600 130q50 80 100 0" fill="none" stroke="${G}" stroke-width="4"/><path d="M650 200v30M620 230h60" stroke="${G}" stroke-width="4"/></g>
+  ${mk(1,300,190)}${mk(2,700,380)}${mk(3,650,115)}`);
+ART.social = () => svg(`
+  <rect x="150" y="10" width="340" height="670" rx="46" fill="rgba(5,22,31,.97)" stroke="${G}" stroke-width="5"/>
+  <circle cx="230" cy="100" r="46" fill="rgba(15,70,86,.7)" stroke="${G}" stroke-width="4"/><polygon points="230,70 256,85 256,115 230,130 204,115 204,85" fill="none" stroke="${G}" stroke-width="3"/>
+  ${T(400,92,'tpcc.news',22,'#f7e9b9','middle',700)}${T(400,124,'۷۸۰ دنبال‌کننده',22,'#d9b45f','middle',700)}
+  ${Array.from({length:7}).map((_,i)=>`<circle cx="${190+i*44}" cy="200" r="18" fill="rgba(217,180,95,.15)" stroke="${G}" stroke-width="2.2"/>`).join('')}
+  ${Array.from({length:9}).map((_,i)=>`<rect class="svgb" x="${170+(i%3)*106}" y="${250+Math.floor(i/3)*130}" width="98" height="122" rx="8" fill="rgba(15,70,86,${.3+(i%4)*.12})" stroke="${G}" stroke-width="1.6" style="animation:rise 6s ${i*.3}s ease-in-out infinite;opacity:0"/>`).join('')}
+  ${[['آموزش',700,120],['خبر و نشست',700,250],['تعاونیِ موفق',700,380],['سؤال‌های پرتکرار',700,510]].map(([t,x,y],i)=>`<g class="fl" style="animation-delay:${i*.5}s"><rect x="${x-130}" y="${y-30}" width="260" height="62" rx="31" fill="rgba(5,22,31,.95)" stroke="${G}" stroke-width="2.4"/>${T(x,y+10,t,24)}</g>`).join('')}
+  ${mk(1,320,92)}${mk(2,330,200)}${mk(3,320,440)}${mk(4,580,300)}`);
+ART.data = () => svg(`
+  ${R(30,30,470,360,18,'rgba(5,22,31,.96)',G,3)}
+  <polyline class="dr" pathLength="100" points="60,330 120,290 180,310 240,240 300,260 360,180 420,200 470,130" fill="none" stroke="#f7e9b9" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  ${[0,1,2,3,4,5].map(i=>`<rect class="svgb" x="${60+i*68}" y="${360-[40,70,52,100,84,130][i]}" width="40" height="${[40,70,52,100,84,130][i]}" rx="6" fill="rgba(217,180,95,.25)" stroke="${G}" stroke-width="1.6" style="transform-origin:bottom;transform-box:fill-box;animation:grow 4.5s ${i*.2}s ease infinite alternate"/>`).join('')}
+  ${R(530,30,280,360,18,'rgba(5,22,31,.96)',G,3)}${T(670,70,'نقشهٔ سایت',22,'#d9b45f')}
+  <path d="M670 100V180M670 140H590M670 140H750M590 140V220M750 140V220" stroke="${G}" stroke-width="2.5" fill="none"/>
+  ${[[670,95],[590,140],[750,140],[590,225],[750,225]].map(([x,y],i)=>`<circle cx="${x}" cy="${y}" r="16" fill="#061b26" stroke="${i===3?'#e8a54b':G}" stroke-width="3" class="${i===3?'tw':''}"/>`).join('')}
+  ${T(590,290,'?p=۱۲۳',20,'#e8a54b','middle',500)}${T(750,290,'/خبر/نام-خوانا',18,'#d9b45f','middle',500)}
+  ${R(30,420,380,250,18,'rgba(5,22,31,.96)','#e8a54b',3)}${T(220,470,'آنالیتیکس: ؟',26,'#e8a54b')}<path d="M60 620L120 600L180 640L240 590L300 630L360 610" fill="none" stroke="#e8a54b" stroke-width="3" stroke-dasharray="8 10" opacity=".7"/>
+  ${R(440,420,370,250,18,'rgba(5,22,31,.96)')}${T(625,470,'داشبورد ماهانه',24)}<g transform="translate(625,580)"><circle r="70" fill="none" stroke="rgba(217,180,95,.2)" stroke-width="18"/><circle r="70" fill="none" stroke="#d9b45f" stroke-width="18" pathLength="100" stroke-dasharray="64 36" stroke-linecap="round" transform="rotate(-90)"/></g>
+  ${mk(1,590,330,true)}${mk(2,670,320,true)}${mk(3,220,435,true)}${mk(4,625,500)}`);
+ART.finance = () => svg(`<g transform="translate(120,0)">
+  <rect x="0" y="40" width="520" height="440" rx="24" fill="rgba(5,22,31,.94)" stroke="${G}" stroke-width="5"/>
+  <rect x="0" y="40" width="104" height="440" rx="24" fill="rgba(217,180,95,.08)" stroke="${G}" stroke-width="1.4"/>
+  ${[0,1,2,3,4].map(i=>`<path d="M22 ${86+i*50}h60" stroke="${G}" stroke-width="4" stroke-linecap="round" opacity="${i?.45:1}"/>`).join('')}
+  ${[0,1,2].map(i=>`<g class="pu svgb" style="animation-delay:${i*.4}s"><rect x="${124+i*130}" y="62" width="118" height="62" rx="12" fill="rgba(217,180,95,.1)" stroke="${G}" stroke-width="2"/><path d="M${140+i*130} 102h46M${140+i*130} 84h72" stroke="${G}" stroke-width="3.5" stroke-linecap="round" opacity=".8"/></g>`).join('')}
+  ${[44,80,62,118,96,150].map((h,i)=>`<rect class="svgb" x="${130+i*38}" y="${390-h}" width="24" height="${h}" rx="5" fill="rgba(217,180,95,.22)" stroke="${G}" stroke-width="1.6" style="transform-origin:bottom;transform-box:fill-box;animation:grow 4.5s ${i*.2}s ease infinite alternate"/>`).join('')}
+  <polyline class="dr" pathLength="100" points="142,342 180,316 218,332 256,282 294,296 332,242" fill="none" stroke="#f7e9b9" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <g style="transform-origin:428px 260px;animation:spin 18s linear infinite"><circle cx="428" cy="260" r="58" fill="none" stroke="rgba(217,180,95,.2)" stroke-width="22"/><circle cx="428" cy="260" r="58" fill="none" stroke="#d9b45f" stroke-width="22" pathLength="100" stroke-dasharray="46 54"/><circle cx="428" cy="260" r="58" fill="none" stroke="#2aa7b8" stroke-width="22" pathLength="100" stroke-dasharray="24 76" stroke-dashoffset="-48"/></g>
+  <g style="animation:scan 3.4s ease-in-out infinite alternate"><rect x="120" y="140" width="390" height="3" fill="#f7e9b9" opacity=".75"/></g>
+  <g class="fl"><circle cx="110" cy="470" r="46" fill="rgba(5,22,31,.96)" stroke="${G}" stroke-width="5"/><circle cx="110" cy="470" r="26" fill="none" stroke="${G}" stroke-width="3"/><path d="M142 502l26 26" stroke="${G}" stroke-width="8" stroke-linecap="round"/><path d="M98 470l8 8 14-16" fill="none" stroke="#f7e9b9" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g>
+  ${chip(210,516,170,'مغایرت ✓ صفر',.4)}${chip(390,516,130,'حسابرسی',1.2)}</g>
+  ${mk(1,380,100)}${mk(2,400,330)}${mk(3,230,470)}`);
+ART.road = () => svg(`
+  <path d="M780 600 C560 600 640 380 420 380 C200 380 300 160 70 160" fill="none" stroke="${G}" stroke-width="8" opacity=".35" stroke-linecap="round"/>
+  <path class="dr" pathLength="100" d="M780 600 C560 600 640 380 420 380 C200 380 300 160 70 160" fill="none" stroke="#f7e9b9" stroke-width="8" stroke-linecap="round" style="animation-duration:7s"/>
+  ${[[700,560,'۳۰','تمیزکاری و پایه'],[420,380,'۶۰','هوشمندسازی'],[140,170,'۹۰','سامانه و رشد']].map(([x,y,n,t],i)=>`<g class="fl" style="animation-delay:${i*.6}s"><line x1="${x}" y1="${y}" x2="${x}" y2="${y-110}" stroke="${G}" stroke-width="5"/><polygon points="${x},${y-110} ${x-96},${y-85} ${x},${y-60}" fill="rgba(217,180,95,.25)" stroke="${G}" stroke-width="3" stroke-linejoin="round"/>${T(x-42,y-80,'روز '+n,20)}${T(x,y+40,t,24,'#d4dfe3')}<circle cx="${x}" cy="${y}" r="13" fill="#f7e9b9"/></g>`).join('')}
+  ${mk(1,700,520)}${mk(2,420,340)}${mk(3,140,130)}${spark(560,180,1.2,.2)}${spark(250,520,1,1)}`);
+ART.invest = () => {
+  const tiers = D.tiers; const calc = (id, ids) => { const t = tiers.find(x=>x.id===id); let one=0, mon=0; ids.forEach(s=>{const it=t.items[s]; if(it[3]) mon+=it[1]; else one+=it[1];}); return {one:Math.round(one*0.9/500000)*500000, mon}; };
+  const P = [calc('basic',['web','forms','auto','seo','manage']), calc('pro',['web','forms','auto','brand','seo','manage']), calc('exclusive',['web','forms','auto','brand','acct','manage','seo'])];
+  ART._prices = P;
+  const H = [170,300,430], X = [640,330,30], N = ['پایه','حرفه‌ای','اختصاصی'];
+  return svg(`
+  <path d="M10 640H830" stroke="${G}" stroke-width="3"/>
+  ${H.map((h,i)=>`<g><rect class="svgb" x="${X[i]}" y="${640-h}" width="190" height="${h}" rx="14" fill="rgba(217,180,95,${.12+i*.08})" stroke="${G}" stroke-width="3" style="transform-origin:bottom;transform-box:fill-box;animation:grow 5s ${i*.3}s ease infinite alternate"/>${T(X[i]+95,640-h-50,N[i],28)}${T(X[i]+95,640-h-18,'از '+money(P[i].one),22,'#d9b45f','middle',700)}</g>`).join('')}
+  ${[0,1,2].map(i=>`<g class="fl" style="animation-delay:${i*.4}s"><circle cx="${X[i]+95}" cy="${640-H[i]-100}" r="14" fill="${G}"/></g>`).join('')}
+  ${mk(1,735,590)}${mk(2,425,590)}${mk(3,125,590)}${spark(420,60,1.3,.2)}${spark(60,200,1,1)}`);
+};
+ART.finale = () => svg(`
+  <polygon points="420,0 200,640 640,640" fill="url(#spot)" opacity=".6"/>
+  <path d="M250 640V300Q420 120 590 300V640Z" fill="rgba(247,233,185,.1)" stroke="${G}" stroke-width="6"/>
+  <path d="M10 640H830" stroke="${G}" stroke-width="3"/>
+  ${D.share && D.share.qrData ? `<g class="fl"><rect x="320" y="270" width="200" height="200" rx="18" fill="#fff" stroke="${G}" stroke-width="5"/><image href="${D.share.qrData}" x="330" y="280" width="180" height="180" style="image-rendering:pixelated"/></g>` : `<g class="fl"><polygon points="420,280 480,315 480,385 420,420 360,385 360,315" fill="#0b3340" stroke="${G}" stroke-width="6"/>${T(420,372,'A',64,'#f7e9b9','middle',800)}</g>`}
+  ${chip(300,500,240,'@iranaigent',.3)}${chip(580,200,230,'جلسهٔ ۳۰ دقیقه‌ای رایگان',.9)}${spark(100,150,1.3,.2)}${spark(760,420,1.1,1)}${spark(180,520,1,.6)}`);
+
+/* ======= SCRIPT of the film ======= */
+const price = (id, label) => ({t:'price', label, get:()=>{ const i={basic:0,pro:1,exclusive:2}[id]; const p=ART._prices[i]; return {one:p.one, mon:p.mon}; }});
+const SCENES = [
+ { id:'street', art:'street', name:'جلوی ساختمان', place:'ورود',
+   items:[
+     {t:'info', s:'منبع', x:'صفحه‌های عمومی tpcc.ir، news.tpcc.ir و اینستاگرام tpcc.news'},
+     {t:'info', s:'تاریخ بررسی', x:'۲۰ آبان ۱۴۰۵'},
+     {t:'info', s:'محدودیت', x:'سیستم‌های داخلی دیده نشده؛ همهٔ پیشنهادها اولیه‌اند و در جلسهٔ نیازسنجی دقیق می‌شوند.'}],
+   beats:[
+     {say:'سلام! من «ایجنت»م، راهنمای دیجیتال شما. امروز اومدیم دم در <b>اتاق تعاون استان تهران</b>.', pose:'wave'},
+     {say:'قراره بریم تو و قدم‌به‌قدم ببینیم دنیای دیجیتالشون چه شکلیه: سایت، تماس، اخبار، خدمات، داوری، آموزش، شبکه‌های اجتماعی و حتی حساب‌وکتاب.', pose:'point', item:0},
+     {say:'هر ایستگاه سه چیز داره: <b>چی دیدیم</b>، <b>چی می‌شه بهتر کرد</b>، و <b>کدوم سرویس AIgent</b> کمک می‌کنه.', item:1},
+     {say:'یه نکتهٔ مهم: هرچی می‌گم از صفحه‌های عمومی سایت و اینستاگرام اومده، نه از داخل سازمان. پس صادقانه بگم، بعضی چیزها رو «ندیدم» و قول نمی‌دم. بریم تو!', item:2}]},
+ { id:'site', art:'site', name:'لابی: سایت اصلی', place:'tpcc.ir',
+   items:[
+     {t:'good', s:'نقطهٔ قوت', x:'چیدمان فارسی راست‌به‌چپ، تمیز و خوانا؛ کارت‌های خدمت دکمهٔ «بیشتر بدانید» و «در ارتباط باشید» دارند.'},
+     {t:'good', s:'نقطهٔ قوت', x:'شمارهٔ تلفن در بالای همهٔ صفحه‌ها و اتصال امن (HTTPS).'},
+     {t:'issue', s:'نکته', x:'آیکن‌های واتساپ و اینستاگرام بالای صفحه لینک واقعی ندارند (#)؛ لینک واقعی فقط پایین صفحه است.'},
+     {t:'issue', s:'نکته', x:'نام بعضی منوها با آدرس صفحه نمی‌خواند: «درباره ما» به /faq/ می‌رود و «فرم‌ها و آیین‌نامه‌ها» به /about/.'},
+     {t:'issue', s:'نکته', x:'به‌نظر می‌رسد بقایای قالب آزمایشی (متن ویرایشگر و مسیرهای /demo/) در صفحه مانده است.'},
+     {t:'idea', s:'پیشنهاد', x:'ورودی سایت دور چهار مسیر: «عضو هستم»، «می‌خواهم عضو شوم»، «داوری و نظارت»، «اخبار»؛ به‌علاوهٔ جستجوی هوشمند و نسخهٔ انگلیسی کوتاه.'},
+     {t:'svc', s:'سرویس AIgent', svc:['web','forms','seo']}],
+   beats:[
+     {say:'اینجا لابیِ دیجیتالشونه، یعنی صفحهٔ اول <b>tpcc.ir</b>. اولین چیزی که به چشم میاد: چیدمان فارسیِ تمیز، با دکمه‌هایی که معلومه کجا باید بزنی.', mk:3, item:0},
+     {say:'شمارهٔ تلفن بالای همهٔ صفحه‌ها هست و HTTPS هم دارن. برای اعتماد مخاطب عالیه.', mk:1, item:1},
+     {say:'ولی چند تا نکتهٔ ریز دیدم. آیکن‌های واتساپ و اینستاگرام بالای صفحه هنوز لینک واقعی ندارن، فقط «#» هستن. مراجعه‌کننده می‌زنه و هیچ اتفاقی نمی‌افته.', mk:1, item:2},
+     {say:'اسم بعضی منوها هم با مقصدشون جور نیست. مثلاً «درباره ما» می‌ره به آدرسی به اسم faq. مخاطب گیج می‌شه، گوگل هم همین‌طور.', mk:2, item:3},
+     {say:'یه چیز دیگه: به‌نظر میاد متن آزمایشی و مسیرهای demo هم جا مونده؛ مثل وسایل نقاش که بعد از کار برنداشتن.', item:4},
+     {say:'پیشنهاد ما: ورودی سایت رو دور چهار مسیر بچینیم. و چون اتاق دیدارهای بین‌المللی هم داره، یه نسخهٔ انگلیسیِ کوتاه هم کنارش بذاریم.', mk:4, item:5},
+     {say:'این‌ها کار سایتِ ماست: طراحی وب‌سایت، فرم‌های آنلاین و سئو.', item:6}]},
+ { id:'contact', art:'contact', name:'میز پذیرش: ارتباط و تماس', place:'تماس',
+   items:[
+     {t:'good', s:'نقطهٔ قوت', x:'تلفن در همهٔ صفحه‌ها و فرم تماس ساده با ۵ فیلد.'},
+     {t:'issue', s:'نکته', x:'ایمیل سازمانی دیده نشد؛ دو آدرس و دو شمارهٔ فکس متفاوت در سایت آمده.'},
+     {t:'issue', s:'نکته', x:'تلگرام و «بله» فقط در سایت خبری لینک شده‌اند، نه سایت اصلی.'},
+     {t:'idea', s:'پیشنهاد', x:'یک صفحهٔ تماس واحد و «پذیرش هوشمند»: دستیار پاسخ‌گو در واتساپ، بله و تلگرام برای سؤال‌های تکراری.'},
+     {t:'idea', s:'پیشنهاد', x:'هر درخواست کد پیگیری بگیرد و وضعیتش معلوم باشد: دریافت ← بررسی ← پاسخ.'},
+     {t:'svc', s:'سرویس AIgent', svc:['auto','forms']}],
+   beats:[
+     {say:'رسیدیم به میز پذیرش. هر کسی بخواد با اتاق حرف بزنه از اینجا رد می‌شه: تلفن، فرم، واتساپ، تلگرام، بله.', mk:1},
+     {say:'خبر خوب: شمارهٔ تلفن همیشه دم دسته و فرم تماس هم ساده‌ست: نام، ایمیل، تلفن، شهر و پیام.', mk:2, item:0},
+     {say:'ولی ایمیل رو هیچ‌جا ندیدم، و دو تا آدرس و دو تا فکس با شمارهٔ مختلف توی سایت هست. مراجعه‌کننده نمی‌دونه کدوم درسته.', mk:2, item:1},
+     {say:'تلگرام و بله هم فقط توی سایت خبری هست.', item:2},
+     {say:'پیشنهادمون یه «پذیرش هوشمنده»: یه صفحهٔ تماس واحد و یه دستیار که توی واتساپ و بله و تلگرام جواب سؤال‌های تکراری مثل «کارت بازرگانی چطوره؟» رو بده.', mk:3, item:3},
+     {say:'هر درخواست هم کد پیگیری می‌گیره. دیگه کسی نمی‌پرسه «نامهٔ من چی شد؟».', mk:1, item:4},
+     {say:'سرویس‌ها: اتوماسیون و عامل هوشمند، و پلتفرم و فرم آنلاین.', item:5}]},
+ { id:'news', art:'news', name:'اتاق خبر', place:'news.tpcc.ir',
+   items:[
+     {t:'good', s:'نقطهٔ قوت', x:'پایگاه خبری فعال با آرشیو حدود ۲۳ ماه (مهر ۱۴۰۳ تا آبان ۱۴۰۵).'},
+     {t:'good', s:'نقطهٔ قوت', x:'دسته‌بندی منظم؛ بخش پادکست و گالری تصاویر هم دارد.'},
+     {t:'issue', s:'نکته', x:'بلوک خبر صفحهٔ اول عقب است (اطلاعیهٔ تیر ۱۴۰۵ و جشنوارهٔ ۱۴۰۴) در حالی‌که خبرهای آبان ۱۴۰۵ منتشر شده.'},
+     {t:'issue', s:'نکته', x:'نقشهٔ سایت (sitemap.xml) آخرین‌بار ۲۰۲۵ به‌روز شده و خبرهای ۲۰۲۶ در آن نیست.'},
+     {t:'idea', s:'پیشنهاد', x:'هر خبر مهم خودکار سه خروجی بدهد: خبر سایت، کارت اینستاگرام، پیام تلگرام و بله.'},
+     {t:'idea', s:'پیشنهاد', x:'تقویم محتوایی ماهانه و ویدیوی ۳۰ ثانیه‌ای از نشست‌ها.'},
+     {t:'svc', s:'سرویس AIgent', svc:['manage','auto','seo']}],
+   beats:[
+     {say:'اینجا اتاق خبره: <b>news.tpcc.ir</b>. راستش دلم باز شد؛ خبر مرتب منتشر می‌شه: بیانیه، دیدار، نشست. آرشیوشون از مهر ۱۴۰۳ تا آبان ۱۴۰۵ پره.', mk:1, item:0},
+     {say:'دسته‌بندی هم دارن: هیئت رئیسه، کمیسیون‌ها، تعاونی و اتحادیه‌ها، مرکز داوری، حتی پادکست و گالری تصاویر.', item:1},
+     {say:'اما صفحهٔ اول tpcc.ir این سرعت رو نداره: وقتی بررسی کردم، اطلاعیهٔ تیر ۱۴۰۵ و جشنوارهٔ ۱۴۰۴ هنوز اونجا بود، در حالی‌که خبرهای آبان تازه‌ن.', mk:2, item:2},
+     {say:'یه نکتهٔ فنی هم هست: نقشهٔ سایت آخرین‌بار ۲۰۲۵ به‌روز شده و خبرهای ۲۰۲۶ توش نیست؛ یعنی گوگل دیرتر خبرها رو پیدا می‌کنه.', item:3},
+     {say:'راهش ساده‌ست: هر خبر مهم خودکار بشه سه تا خروجی: یه خبر روی سایت، یه کارت برای اینستاگرام، یه پیام کوتاه برای تلگرام و بله. یه بار می‌نویسی، سه جا منتشر می‌شه.', mk:3, item:4},
+     {say:'با یه تقویم محتوایی هم هر ماه معلوم می‌شه کی چی منتشر بشه، حتی یه ویدیوی ۳۰ ثانیه‌ای از نشست‌ها.', item:5},
+     {say:'سرویس‌ها: مدیریت پیج و سایت، اتوماسیون و سئو.', item:6}]},
+ { id:'services', art:'services', name:'تالار خدمات', place:'خدمات',
+   items:[
+     {t:'good', s:'نقطهٔ قوت', x:'شش خدمت روشن با کارت: مشاوره، بیمه و مالیات، ثبت و تأسیس، کارت بازرگانی، نمایشگاه، آموزش.'},
+     {t:'issue', s:'نکته', x:'فهرست خدمات صفحهٔ اول با صفحهٔ «خدمات» یکی نیست (نظارت و بازرسی و داوری فقط آنجاست).'},
+     {t:'issue', s:'نکته', x:'در کارت «نمایشگاه‌ها» متنی دربارهٔ کارت بازرگانی آمده (احتمالاً کپی اشتباه).'},
+     {t:'idea', s:'پیشنهاد', x:'برای هر خدمت یک صفحهٔ کامل: برای چه کسی؟ چه مدارکی؟ چند روز؟ و دکمهٔ «درخواست آنلاین».'},
+     {t:'idea', s:'پیشنهاد', x:'پنل درخواست‌ها با وضعیت و کد پیگیری برای عضو و صف منظم برای کارشناس.'},
+     {t:'svc', s:'سرویس AIgent', svc:['web','forms','auto']}],
+   beats:[
+     {say:'اینجا قلب کاره: خدماتی که اتاق به تعاونی‌ها می‌ده. توی صفحهٔ اول شش تا کارت دیدم: مشاوره، بیمه و مالیات، ثبت و تأسیس، کارت بازرگانی، نمایشگاه و آموزش.', mk:1, item:0},
+     {say:'ولی صفحهٔ «خدمات» دسته‌های دیگه‌ای هم داره، مثل نظارت و بازرسی و داوری. یعنی فهرست خدمات توی دو جا دو جور گفته شده.', item:1},
+     {say:'توی کارت نمایشگاه‌ها هم توضیحِ «کارت بازرگانی» اومده؛ احتمالاً کپی‌پیست شده. چیز کوچیکیه ولی چشم مخاطب رو اذیت می‌کنه.', mk:2, item:2},
+     {say:'این خدمت‌ها الان بیشتر «مشاورهٔ تلفنی»ن. من پیشنهاد می‌کنم هر خدمت یه صفحهٔ کامل داشته باشه: برای کی؟ چه مدارکی؟ چند روزه؟ و یه دکمهٔ «درخواست آنلاین».', mk:3, item:3},
+     {say:'بعد درخواست می‌ره توی یه پنل؛ هم مراجعه‌کننده می‌بینه کار کجاست، هم کارشناس‌ها یه صف منظم دارن.', mk:3, item:4},
+     {say:'سرویس‌ها: طراحی وب‌سایت، فرم و پلتفرم آنلاین، و اتوماسیون.', item:5}]},
+ { id:'arb', art:'arbitration', name:'مرکز داوری و کمیسیون نظارت', place:'داوری و نظارت',
+   items:[
+     {t:'good', s:'نقطهٔ قوت', x:'مرکز داوری و کمیسیون نظارت هر دو در منوی اصلی جایگاه روشن دارند.'},
+     {t:'good', s:'نقطهٔ قوت', x:'در اخبار از سامانه‌های جداگانهٔ داوری و نظارت (iccdavari.ir و iccnezarat.ir) نام برده شده است.'},
+     {t:'issue', s:'نکته', x:'در صفحه‌های بررسی‌شده، دکمهٔ مستقیم ورود به این سامانه‌ها دیده نشد.'},
+     {t:'idea', s:'پیشنهاد', x:'پنل یکپارچهٔ پرونده‌ها: از ثبت درخواست تا جلسه و رأی، با وضعیت لحظه‌ای.'},
+     {t:'idea', s:'پیشنهاد', x:'یادآور خودکار جلسه‌ها در پیامک و بله و یک داشبورد مدیریتی برای پرونده‌های باز و عقب‌افتاده.'},
+     {t:'svc', s:'سرویس AIgent', svc:['forms','auto','webapp']}],
+   beats:[
+     {say:'این دو بخش خیلی مهمن چون اعتماد اعضا به اینجاست: مرکز داوری برای حل اختلاف و کمیسیون نظارت. هر دو توی منوی اصلی هستن؛ آفرین.', mk:1, item:0},
+     {say:'توی خبرها دیدم سامانه‌های جداگانه‌ای هم دارن، مثل iccdavari و iccnezarat. یعنی بخشی از کار از قبل دیجیتاله.', mk:2, item:1},
+     {say:'ولی از سایت اصلی، یه مراجعه‌کننده راه ورود به این سامانه‌ها رو راحت پیدا نمی‌کنه؛ دکمهٔ مستقیم ندیدم.', mk:2, item:2},
+     {say:'پیشنهاد ما: یه پنل یکپارچه برای پرونده‌ها؛ از ثبت درخواست تا جلسه و رأی، هر مرحله وضعیتش لحظه‌ای معلومه.', mk:2, item:3},
+     {say:'با یادآور خودکار جلسه‌ها توی پیامک و بله، و یه داشبورد برای مدیر: چند پرونده باز داریم؟ کدوم عقب افتاده؟', mk:3, item:4},
+     {say:'سرویس‌ها: فرم آنلاین، اتوماسیون، و یه وب‌اپ اختصاصی برای پرونده‌ها.', item:5}]},
+ { id:'train', art:'training', name:'کلاس آموزش', place:'آموزش',
+   items:[
+     {t:'good', s:'نقطهٔ قوت', x:'شورای تخصصی آموزش (نخستین نشست مهر ۱۴۰۵) و هایلایت «آموزش» در اینستاگرام.'},
+     {t:'issue', s:'نکته', x:'فهرست دوره‌ها و ثبت‌نام آنلاین آموزش در صفحه‌های بررسی‌شده دیده نشد.'},
+     {t:'idea', s:'پیشنهاد', x:'«کلاس آنلاین»: وبینار زنده یا ضبط‌شده، ثبت‌نام با فرم ساده و گواهی پایان دوره با QR.'},
+     {t:'idea', s:'پیشنهاد', x:'هر نشست تخصصی ← یک قسمت پادکست + یک ریلز کوتاه (یک محتوا، چند خروجی).'},
+     {t:'svc', s:'سرویس AIgent', svc:['web','forms','manage']}],
+   beats:[
+     {say:'آموزش یکی از اهداف اتاقه و تازگی‌ها «شورای تخصصی آموزش» هم تشکیل شده. توی اینستاگرام هم یه هایلایت جدا به اسم «آموزش» دارن.', mk:1, item:0},
+     {say:'ولی توی سایت، فهرست دوره‌ها و ثبت‌نام آنلاین ندیدم. یعنی مخاطب نمی‌دونه کی و کجا دوره هست.', item:1},
+     {say:'پیشنهاد: یه «کلاس آنلاین» بسازیم؛ وبینارها زنده یا ضبط‌شده، ثبت‌نام با یه فرم ساده، و گواهی پایان دوره با کد QR که اصالتش قابل استعلامه.', mk:2, item:2},
+     {say:'هر نشست تخصصی هم می‌تونه بشه یه قسمت پادکست و یه ریلز کوتاه؛ یه محتوا، چند بار استفاده.', mk:3, item:3},
+     {say:'سرویس‌ها: طراحی وب، فرم آنلاین، و مدیریت محتوا.', item:4}]},
+ { id:'social', art:'social', name:'دیوار شبکه‌های اجتماعی', place:'اینستاگرام',
+   items:[
+     {t:'good', s:'نقطهٔ قوت', x:'صفحهٔ رسمی با ۷۸۰ دنبال‌کننده، نشان سازمان در پروفایل و لینک به tpcc.ir.'},
+     {t:'good', s:'نقطهٔ قوت', x:'هایلایت‌های منظم: هیئت رئیسه، آموزش، نشست‌های تخصصی، خدمات، کمیسیون‌ها، درباره ما، ارتباط با ما.'},
+     {t:'info', s:'ندیدم', x:'شمار پست‌ها و تناوب انتشار بررسی نشد (اینستاگرام بدون ورود اجازه نداد).'},
+     {t:'idea', s:'پیشنهاد', x:'چهار ستون ثابت: «آموزش»، «خبر و نشست»، «تعاونیِ موفق این هفته»، «سؤال‌های پرتکرار»؛ با قالب یکدست.'},
+     {t:'idea', s:'پیشنهاد', x:'هدف: دنبال‌کنندهٔ «درست» (مدیران و هیئت‌مدیرهٔ تعاونی‌ها) و گزارش ماهانه از محتوایی که جذبشان کرده.'},
+     {t:'svc', s:'سرویس AIgent', svc:['manage','brand','logo']}],
+   beats:[
+     {say:'اینستاگرام رسمی اتاق: <b>tpcc.news</b>. ۷۸۰ دنبال‌کننده، نشان اتاق توی پروفایل و لینک به سایت. شروع خوبیه.', mk:1, item:0},
+     {say:'هایلایت‌ها هم مرتبن: هیئت رئیسه، آموزش، نشست‌های تخصصی، خدمات، کمیسیون‌ها، درباره ما، ارتباط با ما. مثل یه منوی کوچیک توی گوشی.', mk:2, item:1},
+     {say:'پست‌ها هم ترکیبی از عکس نشست‌ها و پوستر متنی و چند ریل بود. فقط یادتون باشه: تعداد پست‌ها و هر چند وقت یه‌بار پست می‌ذارن رو ندیدم.', mk:3, item:2},
+     {say:'پیشنهاد ما: چهار ستون محتوایی ثابت: «آموزش»، «خبر و نشست»، «تعاونیِ موفق این هفته» و «سؤال‌های پرتکرار»؛ با قالب و رنگ یکدست.', mk:4, item:3},
+     {say:'و هدف دنبال‌کنندهٔ بیشتر نیست، دنبال‌کنندهٔ «درسته»: مدیران تعاونی‌ها. گزارش ماهانه نشون می‌ده کدوم محتوا اونا رو جذب کرده.', item:4},
+     {say:'سرویس‌ها: مدیریت پیج، برندسازی دیجیتال، و لوگو و آواتار.', item:5}]},
+ { id:'data', art:'data', name:'اتاق داده: سئو و آنالیز', place:'سئو',
+   items:[
+     {t:'good', s:'نقطهٔ قوت', x:'وردپرس و HTTPS؛ بستر مناسبی برای بهینه‌سازی.'},
+     {t:'issue', s:'نکته', x:'آدرس‌های نقشهٔ سایت به شکل ?p= و ?page_id= است (غیرخوانا).'},
+     {t:'issue', s:'نکته', x:'sitemap.xml قدیمی است و robots.txt به wp-sitemap.xml اشاره می‌کند.'},
+     {t:'info', s:'ندیدم', x:'عنوان‌ها، توضیح متا، Open Graph و schema در این بررسی قابل مشاهده نبود؛ نیاز به ممیزی کامل.'},
+     {t:'issue', s:'نکته', x:'ابزار آمار (آنالیتیکس) در متن صفحه‌ها دیده نشد (نیاز به تأیید).'},
+     {t:'idea', s:'پیشنهاد', x:'ممیزی فنی کامل، آدرس‌های تمیز، نقشهٔ سایت خودکار برای هر دو سایت، schema سازمان و خبر، و داشبورد ماهانه.'},
+     {t:'svc', s:'سرویس AIgent', svc:['seo','web']}],
+   beats:[
+     {say:'رسیدیم به اتاق داده؛ جایی که می‌فهمیم مردم چطور پیداتون می‌کنن. سایت وردپرسه و HTTPS داره؛ پایهٔ خوبیه.', item:0},
+     {say:'ولی آدرس صفحه‌ها توی نقشهٔ سایت شکل «?p=۱۲۳»ـه؛ نه برای آدم خوانا، نه برای گوگل جذاب. باید به آدرس‌های معنادار تبدیل بشه.', mk:1, item:1},
+     {say:'نقشهٔ سایت هم قدیمیه و فایل robots به نقشه‌ای اشاره می‌کنه که با اون یکی فرق داره؛ یه ناهماهنگی که باید جمع بشه.', mk:2, item:2},
+     {say:'یه نکته رو صادقانه بگم: عنوان صفحه‌ها، توضیحات متا و schema رو از این بررسیِ ساده نمی‌شد دید. برای اون‌ها باید با ابزارهای کامل مثل Search Console و Lighthouse یه ممیزی بگیریم.', item:3},
+     {say:'و ردپای ابزار آمار هم ندیدم. بدون عدد، مثل رانندگی توی مِهِ.', mk:3, item:4},
+     {say:'پیشنهاد: ممیزی کامل فنی، آدرس‌های تمیز، نقشهٔ سایت خودکار برای هر دو سایت، schema سازمان و خبر، و داشبوردی که هر ماه می‌گه چند نفر اومدن و دنبال چی بودن.', mk:4, item:5},
+     {say:'سرویس‌ها: سئو و بهینه‌سازی، و طراحی وب.', item:6}]},
+ { id:'fin', art:'finance', name:'اتاق حسابداری و حسابرسی', place:'مالی',
+   items:[
+     {t:'info', s:'دیده‌شده', x:'سایت هیئت رئیسه و بازرسان را معرفی کرده؛ سازمان‌های این‌چنینی به گزارش مالی منظم برای نظارت نیاز دارند.'},
+     {t:'idea', s:'پیشنهاد', x:'پنل حسابداری اختصاصی، گزارش‌های مدیریتی برای هیئت رئیسه و ابزار حسابرسی با شناسایی خودکار مغایرت.'},
+     {t:'idea', s:'پیشنهاد', x:'تطبیق خودکار اسناد؛ فقط موارد مشکوک به کارشناس نشان داده شود.'},
+     {t:'idea', s:'پیشنهاد', x:'داشبورد جداگانهٔ بازرسان با ردیابی هر ردیف تا سند اصلی.'},
+     {t:'idea', s:'پیشنهاد', x:'در صورت نیاز، اتصال فاکتور و مالیات به سامانهٔ مودیان؛ پس از جلسهٔ نیازسنجی.'},
+     {t:'svc', s:'سرویس AIgent', svc:['acct']}],
+   beats:[
+     {say:'این یکی اتاق مخصوصه. هر سازمانی یه جا داره که حساب‌وکتاب اونجا جمع می‌شه؛ و اتاق هم هیئت رئیسه و بازرس‌های معرفی‌شده داره.', mk:1, item:0},
+     {say:'ما اینجا سه کار می‌کنیم: یه پنل حسابداری اختصاصی که با فرایند خودتون جور باشه؛ گزارش‌های مدیریتی آماده برای هیئت رئیسه؛ و ابزار حسابرسی که مغایرت‌ها رو خودش پیدا کنه.', mk:1, item:1},
+     {say:'مثلاً به‌جای اینکه آخر ماه چند نفر چند روز اکسل‌ها رو تطبیق بدن، سیستم خودش اسناد رو چک می‌کنه و فقط موارد مشکوک رو نشون می‌ده.', mk:3, item:2},
+     {say:'بازرس‌ها هم یه داشبورد جدا می‌گیرن؛ هر ردیف قابل ردیابیه تا سند اصلیش.', mk:2, item:3},
+     {say:'اگه فاکتور و مالیات هم لازم باشه، به سامانهٔ مودیان وصلش می‌کنیم. البته اینجا حتماً جلسهٔ دقیق نیازسنجی می‌خوایم؛ چون سیستم مالی هر سازمان فرق می‌کنه.', item:4},
+     {say:'سرویس: حسابداری دیجیتال و حسابرسی.', item:5}]},
+ { id:'road', art:'road', name:'نقشهٔ راه ۹۰ روزه', place:'برنامه',
+   items:[
+     {t:'step', s:'روز ۱ تا ۳۰ · تمیزکاری و پایه', x:'لینک‌ها، منوها، صفحهٔ تماس، نقشهٔ سایت، آمار و ممیزی سئو.', n:'۱'},
+     {t:'step', s:'روز ۳۱ تا ۶۰ · هوشمندسازی', x:'انتشار خودکار خبر، قالب‌های اینستاگرام، دستیار پاسخ‌گو و فرم‌های آنلاین با کد پیگیری.', n:'۲'},
+     {t:'step', s:'روز ۶۱ تا ۹۰ · سامانه و رشد', x:'پنل خدمات و داوری، کلاس آنلاین، داشبورد مدیریتی و اولین گزارش رشد.', n:'۳'},
+     {t:'idea', s:'قاعدهٔ کار', x:'هر مرحله خروجی مشخص و قابل دیدن دارد؛ با تأیید شما جلو می‌رویم.'}],
+   beats:[
+     {say:'حالا که همه‌جا رو دیدیم، بیایید ترتیبش کنیم. نمی‌خوایم یهو همه‌چیز عوض شه؛ سه مرحله، هر مرحله ۳۰ روز.'},
+     {say:'ماه اول «تمیزکاری و پایه»: لینک‌های مرده، منوها، صفحهٔ تماس، نقشهٔ سایت، آنالیتیکس و ممیزی سئو.', mk:1, item:0},
+     {say:'ماه دوم «هوشمندسازی»: انتشار خودکار خبر، قالب‌های اینستاگرام، دستیار پاسخ‌گو و فرم‌های آنلاین با کد پیگیری.', mk:2, item:1},
+     {say:'ماه سوم «سامانه و رشد»: پنل خدمات و داوری، کلاس آنلاین، داشبورد مدیریتی و اولین گزارش رشد.', mk:3, item:2},
+     {say:'و هر مرحله یه خروجی مشخص و قابل دیدن داره؛ شما تأیید می‌کنید، بعد جلو می‌ریم.', item:3}]},
+ { id:'invest', art:'invest', name:'سرمایه‌گذاری: سه سناریو', place:'قیمت',
+   items:[
+     price('basic','سناریوی پایه · شروع سریع'),
+     price('pro','سناریوی حرفه‌ای · رشد جدی'),
+     price('exclusive','سناریوی اختصاصی · تحول کامل'),
+     {t:'info', s:'نکتهٔ مهم', x:'قیمت‌ها نقطهٔ شروع‌اند (تعرفهٔ ۱۴۰۵ AIgent)، با ۱۰٪ تخفیف پکیجی روی بخش‌های یک‌باره. قیمت نهایی پس از نیازسنجی.'}],
+   beats:[
+     {say:'برسیم به عدد. دو تا چیز: اول، قیمت‌ها نقطهٔ شروعن، نه قیمت نهایی. دوم، همه‌ی خدمات یه‌جا لازم نیست؛ پله‌پله هم می‌شه.', item:3},
+     {say:'سناریوی <b>پایه</b>، برای شروع سریع: سایت اصلاح‌شده، فرم، یه اتوماسیون ساده و سئوی پایه.', mk:1, item:0},
+     {say:'سناریوی <b>حرفه‌ای</b>: سایت نیمه‌اختصاصی، هویت یکپارچه، اتوماسیون کامل و سئو.', mk:2, item:1},
+     {say:'سناریوی <b>اختصاصی</b>، برای تحول کامل: سایت و برند اختصاصی، عامل هوشمند، و پنل حسابداری و حسابرسی.', mk:3, item:2},
+     {say:'هزینهٔ ماهانهٔ مدیریت پیج و سایت و سئو جداست و هر ماه با گزارش کار همراهه. پیشنهاد من برای شروع: پایه یا حرفه‌ای در ۹۰ روز اول، بعد با نتیجه تصمیم می‌گیریم.'}]},
+ { id:'end', art:'finale', name:'خروج و قدم بعدی', place:'پایان',
+   items:[
+     {t:'good', s:'خلاصه', x:'پایهٔ قوی: اخبار منظم، ساختار روشن، صفحهٔ رسمی اینستاگرام.'},
+     {t:'issue', s:'گره‌های کوچک', x:'لینک‌های ناقص، ناهماهنگی منو و آدرس، خبر قدیمی صفحهٔ اول، نقشهٔ سایت قدیمی.'},
+     {t:'idea', s:'فرصت بزرگ', x:'خدمات و داوری را آنلاین و قابل‌پیگیری کنید.'},
+     {t:'idea', s:'قدم بعد', x:'جلسهٔ ۳۰ دقیقه‌ای رایگان کشف نیاز؛ بعد پیشنهاد نهایی.'},
+     {t:'info', s:'تماس', x:'اینستاگرام: iranaigent'}],
+   beats:[
+     {say:'گشتمون تموم شد! خلاصه: پایهٔ قوی دارید: اخبار منظم، ساختار روشن، صفحهٔ رسمی در اینستاگرام.', item:0, pose:'wave'},
+     {say:'چند تا گرهٔ کوچیک هم هست که با تمیزکاری باز می‌شه، و یه فرصت بزرگ: <b>خدمات و داوری رو آنلاین و قابل‌پیگیری کنید.</b>', item:1},
+     {say:'قدم بعد ساده‌ست: یه جلسهٔ ۳۰ دقیقه‌ای رایگان کشف نیاز. اولویت‌ها رو باهم انتخاب می‌کنیم و پیشنهاد نهایی می‌گیرید.', item:3, mk:0},
+     {say:'من «ایجنت» بودم. اگه خواستید ادامه بدیم، QR رو اسکن کنید یا توی اینستاگرام پیام بدید: <b>iranaigent</b>. تا دیدار بعدی!', item:4, pose:'wave'}]}
+];
+const N = SCENES.length;
+
+/* ======= build DOM ======= */
+const world = document.getElementById('world');
+world.style.width = (N*1920)+'px';
+const rooms = [];
+SCENES.forEach((s,i)=>{
+  const r = document.createElement('div'); r.className='room'; r.style.left = ((N-1-i)*1920)+'px';
+  const lamps = [300,900,1500].map(x=>`<i class="lamp" style="left:${x}px"></i>`).join('');
+  r.innerHTML = `<div class="wall"></div><div class="floor"></div>${lamps}<div class="doorway"></div>
+    <div class="tag"><span class="gold">${s.name}</span><small>ایستگاه ${fa(i+1)} از ${fa(N)}</small></div>
+    <div class="art">${ART[s.art]()}</div>`;
+  world.appendChild(r); rooms.push(r);
+});
+// far background (stars / skyline) parallax
+const bgfar = document.getElementById('bgfar'); bgfar.style.width = (N*1920*0.4+1920)+'px';
+bgfar.innerHTML = `<svg width="100%" height="1080" preserveAspectRatio="none" viewBox="0 0 ${N*768+1920} 1080">${Array.from({length:N*5}).map((_,i)=>`<rect x="${i*160+((i*53)%90)}" y="${300+((i*97)%240)}" width="${70+(i*31)%80}" height="${520-((i*97)%240)}" fill="rgba(15,70,86,.18)"/>`).join('')}</svg>`;
+
+const dots = document.getElementById('dots');
+SCENES.forEach((s,i)=>{ const d=document.createElement('i'); d.title=s.name; d.onclick=()=>go(i); dots.appendChild(d); });
+
+/* ======= engine ======= */
+const hero = document.getElementById('hero'), bubble = document.getElementById('bubble'), panel = document.getElementById('panel');
+const items = document.getElementById('items'), ptitle = document.getElementById('ptitle'), pstep = document.getElementById('pstep');
+let token = 0, paused = false, cur = -1, started = false;
+const setPose = p => { hero.className = p; };
+const sleep = (ms,my) => new Promise(res=>{ let t=0; const iv=setInterval(()=>{ if(my!==token){clearInterval(iv);res(false);return} if(!paused){ t+=100; if(t>=ms){clearInterval(iv);res(true)} } },100); });
+function itemHTML(it){
+  if(it.t==='svc') return `<div class="it svc"><div class="ic" style="border:2px solid var(--gold2);color:var(--gold1)">&#10022;</div><div style="flex:1"><small>${it.s}</small><div class="chips">${it.svc.map(id=>`<span>${sv(id)}</span>`).join('')}</div></div></div>`;
+  if(it.t==='price'){ const p=it.get(); return `<div class="it price pr"><div class="ic">&#10022;</div><div><small>${it.label}</small><b class="gold">از ${money(p.one)}</b><em>تومان یک‌باره${p.mon?` · ${money(p.mon)} تومان در ماه`:''}</em></div></div>`; }
+  const ic = {good:'&#10003;',issue:'!',idea:'&#9733;',info:'i',step:it.n||'•'}[it.t];
+  return `<div class="it ${it.t}"><div class="ic">${ic}</div><div><small>${it.s}</small>${it.x}</div></div>`;
+}
+function showBubble(html){
+  bubble.classList.remove('on');
+  const len = html.replace(/<[^>]+>/g,'').length;
+  bubble.style.fontSize = (len>170 ? 25 : len>120 ? 28 : 31) + 'px';
+  setTimeout(()=>{
+    let n = 0;
+    bubble.innerHTML = html.replace(/(<[^>]+>)|([^<\s]+)/g,(m,tag,word)=> tag? tag : `<span class="w" style="animation-delay:${(n++)*0.07}s">${word}</span>`).replace(/<\/span>\s*<span/g,'</span> <span');
+    bubble.classList.add('on');
+  },200);
+}
+function renderScene(i){
+  const s = SCENES[i]; ptitle.textContent = s.name; pstep.textContent = `ایستگاه ${fa(i+1)} از ${fa(N)} · ${s.place}`;
+  items.innerHTML = s.items.map(itemHTML).join('');
+  rooms.forEach((r,k)=>{ r.classList.toggle('active', k===i); r.style.display = (Math.abs(k-i)<=1 || Math.abs(k-(runScene.last==null?i:runScene.last))<=1) ? '' : 'none'; });
+  [...dots.children].forEach((d,k)=>{ d.className = k===i?'on':(k<i?'done':''); });
+  rooms[i].querySelectorAll('.mk').forEach(m=>m.classList.remove('on'));
+}
+function panTo(i, dur){
+  document.documentElement.style.setProperty('--pan', dur+'s');
+  const tx = -((N-1-i)*1920);
+  world.style.transform = `translateX(${tx}px)`;
+  bgfar.style.transition = `transform ${dur}s cubic-bezier(.65,0,.35,1)`;
+  bgfar.style.transform = `translateX(${tx*0.4}px)`;
+}
+async function runScene(i, my, first){
+  cur = i;
+  bubble.classList.remove('on'); panel.classList.remove('on');
+  renderScene(i);
+  const far = first ? 0 : Math.abs(i - (runScene.last==null?i:runScene.last));
+  runScene.last = i;
+  if(first){ panTo(i,0.01); hero.style.transition='none'; hero.style.left='2150px'; await sleep(120,my); hero.style.transition=''; setPose('walk'); hero.style.left='1190px'; if(!await sleep(3500,my)) return; }
+  else { setPose('walk'); panTo(i, far>1?1.4:2.4); if(!await sleep(far>1?1500:2500,my)) return; }
+  setPose('idle'); panel.classList.add('on');
+  const s = SCENES[i];
+  for(const b of s.beats){
+    if(my!==token) return;
+    setPose(b.pose || (b.mk ? 'point' : 'talk'));
+    showBubble(b.say);
+    rooms[i].querySelectorAll('.mk').forEach(m=>m.classList.toggle('on', +m.dataset.n===b.mk));
+    if(b.item!=null && items.children[b.item]){ const el=items.children[b.item]; el.classList.add('show'); el.scrollIntoView({block:'nearest',behavior:'smooth'}); }
+    const plain = b.say.replace(/<[^>]+>/g,'');
+    if(!await sleep(Math.max(3600, plain.length*68+900), my)) return;
+  }
+  setPose('idle'); bubble.classList.remove('on');
+  if(!await sleep(900,my)) return;
+  if(i<N-1) runScene(i+1, my, false); else { setPose('wave'); }
+}
+function go(i){ i=Math.max(0,Math.min(N-1,i)); token++; paused=false; setPlayIcon(); runScene(i, token, false); }
+function setPlayIcon(){ document.getElementById('play').innerHTML = paused ? '&#9654;' : '&#10074;&#10074;'; }
+document.getElementById('play').onclick = ()=>{ paused=!paused; setPlayIcon(); hero.style.animationPlayState = paused?'paused':'running'; };
+document.getElementById('next').onclick = ()=>go(cur+1);
+document.getElementById('prev').onclick = ()=>go(cur-1);
+document.getElementById('fs').onclick = ()=>{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(()=>{}); };
+addEventListener('keydown',e=>{
+  if(!started) return;
+  if(e.key===' '){ e.preventDefault(); document.getElementById('play').click(); }
+  else if(e.key==='ArrowLeft'||e.key==='PageDown'){ e.preventDefault(); go(cur+1); }
+  else if(e.key==='ArrowRight'||e.key==='PageUp'){ e.preventDefault(); go(cur-1); }
+  else if(e.key==='f'||e.key==='F') document.getElementById('fs').click();
+});
+document.getElementById('start').onclick = ()=>{ started=true; document.getElementById('intro').classList.add('hide'); token++; runScene(0, token, true); };
+// allow deep link: #scene-3 starts directly at that scene (for testing/sharing)
+const m = /^#s(\d+)$/.exec(location.hash);
+if(m){ setTimeout(()=>{ started=true; document.getElementById('intro').classList.add('hide'); token++; const i=Math.min(N-1,Math.max(0,+m[1]-1)); runScene.last=i; hero.style.transition='none'; runScene(i, token, true); }, 200); }
+
+/* ======= stage fit + dust ======= */
+const stage = document.getElementById('stage');
+function fit(){ const s=Math.min(innerWidth/1920, innerHeight/1080); stage.style.transform=`translate(${-960*s}px,${-540*s}px) scale(${s})`; }
+addEventListener('resize',fit); fit();
+(function(){
+  const c=document.getElementById('dust'),x=c.getContext('2d');const P=[];
+  for(let i=0;i<90;i++)P.push({x:Math.random()*1920,y:Math.random()*1080,r:Math.random()*2+.4,v:Math.random()*.3+.08,a:Math.random()*6.28,s:Math.random()*.02+.005,dx:(Math.random()-.5)*.25});
+  (function tick(){ x.clearRect(0,0,1920,1080);
+    for(const p of P){p.y-=p.v;p.x+=p.dx+Math.sin(p.a)*.15;p.a+=p.s;if(p.y<-5){p.y=1085;p.x=Math.random()*1920}
+      const al=.2+.55*Math.abs(Math.sin(p.a*3));const g=x.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);g.addColorStop(0,`rgba(247,233,185,${al})`);g.addColorStop(.35,`rgba(217,180,95,${al*.5})`);g.addColorStop(1,'rgba(217,180,95,0)');x.fillStyle=g;x.beginPath();x.arc(p.x,p.y,p.r*4,0,6.283);x.fill();}
+    requestAnimationFrame(tick); })();
+})();
+})();
+</script>
+</body>
+</html>
